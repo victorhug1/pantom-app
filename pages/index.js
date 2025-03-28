@@ -1,42 +1,69 @@
+import Layout from "../components/Layout";
+import { Search, BarChart3, Code2 } from "lucide-react";
 import { motion } from "framer-motion";
-import Head from "next/head";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center px-4">
-      <Head>
-        <title>Pantom Digital Studio</title>
-        <meta name="description" content="Estudio digital especializado en SEO y marketing digital" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+    <Layout>
+      <section className="bg-dark text-white py-16 px-4">
+        <div className="max-w-7xl mx-auto text-center mb-12">
+          <h2 className="text-3xl md:text-5xl font-bold text-primary mb-4">Nuestros Servicios</h2>
+          <p className="text-light text-lg">Soluciones digitales enfocadas en resultados.</p>
+        </div>
 
-      <motion.h1
-        className="text-4xl md:text-6xl font-bold text-center text-[#ea5a19]"
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8 }}
-      >
-        Bienvenido a Pantom
-      </motion.h1>
+        <div className="grid md:grid-cols-3 gap-10 max-w-7xl mx-auto">
+          {/* SEO */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+            className="bg-[#222] p-6 rounded-2xl shadow-lg hover:shadow-xl transition"
+          >
+            <div className="flex items-center justify-center mb-4">
+              <Search size={40} className="text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-center mb-2">SEO</h3>
+            <p className="text-sm text-center text-gray-300">
+              Posicionamos tu sitio en Google de forma orgánica con estrategias de contenido, técnica y autoridad.
+            </p>
+          </motion.div>
 
-      <motion.p
-        className="mt-4 text-lg md:text-xl text-center max-w-xl text-white"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.3 }}
-      >
-        Estudio digital especializado en SEO, marketing de contenidos y estrategias digitales personalizadas.
-      </motion.p>
+          {/* Marketing Digital */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="bg-[#222] p-6 rounded-2xl shadow-lg hover:shadow-xl transition"
+          >
+            <div className="flex items-center justify-center mb-4">
+              <BarChart3 size={40} className="text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-center mb-2">Marketing Digital</h3>
+            <p className="text-sm text-center text-gray-300">
+              Creamos campañas personalizadas en redes sociales, email y anuncios para atraer y convertir clientes.
+            </p>
+          </motion.div>
 
-      <motion.a
-        href="#services"
-        className="mt-8 px-6 py-3 bg-[#ea5a19] text-black rounded-2xl font-semibold shadow-lg hover:bg-white transition"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.6 }}
-      >
-        Conoce nuestros servicios
-      </motion.a>
-    </div>
+          {/* Desarrollo Web */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="bg-[#222] p-6 rounded-2xl shadow-lg hover:shadow-xl transition"
+          >
+            <div className="flex items-center justify-center mb-4">
+              <Code2 size={40} className="text-primary" />
+            </div>
+            <h3 className="text-xl font-semibold text-center mb-2">Desarrollo Web</h3>
+            <p className="text-sm text-center text-gray-300">
+              Diseñamos y desarrollamos sitios rápidos, responsivos y enfocados en experiencia de usuario.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+    </Layout>
   );
 }
