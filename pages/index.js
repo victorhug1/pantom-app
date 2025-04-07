@@ -1,14 +1,21 @@
 import Layout from "../components/Layout";
+import Hero from "../components/Hero";
 import { Search, BarChart3, Code2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
   return (
     <Layout>
+      <Hero />
+
       <section className="bg-dark text-white py-16 px-4">
         <div className="max-w-7xl mx-auto text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-primary mb-4">Nuestros Servicios</h2>
-          <p className="text-light text-lg">Soluciones digitales enfocadas en resultados.</p>
+          <h2 className="text-3xl md:text-5xl font-bold text-primary mb-4">
+            Nuestros Servicios
+          </h2>
+          <p className="text-light text-lg">
+            Soluciones digitales enfocadas en resultados.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-10 max-w-7xl mx-auto">
@@ -67,4 +74,3 @@ export default function Home() {
     </Layout>
   );
 }
-
