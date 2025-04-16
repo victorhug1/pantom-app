@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Layout from "../components/Layout";
 import Hero from "../components/Hero";
 import { Search, BarChart3, Code2 } from "lucide-react";
@@ -6,6 +7,11 @@ import { motion } from "framer-motion";
 export default function Home() {
   return (
     <Layout>
+      <Head>
+        <title>Pantom Digital Studio</title>
+        <meta name="description" content="Estudio digital especializado en SEO, marketing digital y desarrollo web. Elevamos tu marca en el entorno online." />
+        <link rel="icon" href="/pantom_logo.svg" />
+      </Head> 
       <Hero />
 
       <section className="bg-dark text-white py-16 px-4">
