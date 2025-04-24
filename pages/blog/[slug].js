@@ -1,9 +1,15 @@
 import SEO from '@/components/SEO';
 import { useRouter } from 'next/router';
+import Error from 'next/error';
 
 export default function BlogPost({ post }) {
   const router = useRouter();
   const { locale } = router;
+
+  // Si no hay post, mostrar error 404
+  if (!post) {
+    return <Error statusCode={404} />;
+  }
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -48,7 +54,32 @@ export default function BlogPost({ post }) {
         alternateLocales={locale === 'es' ? ['en_US'] : ['es_ES']}
         structuredData={structuredData}
       />
-      {/* Resto del contenido del blog */}
+      <div className="container mx-auto px-4 py-8">
+        <article className="max-w-3xl mx-auto">
+          <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+          <div className="prose prose-lg max-w-none">
+            {post.content}
+          </div>
+        </article>
+      </div>
     </>
   );
+}
+
+export async function getStaticPaths() {
+  // Por ahora, no generamos paths estáticos
+  return {
+    paths: [],
+    fallback: 'blocking'
+  };
+}
+
+export async function getStaticProps({ params }) {
+  // Por ahora, retornamos null para evitar el error
+  return {
+    props: {
+      post: null
+    },
+    revalidate: 60 // Revalidar cada minuto
+  };
 } 
