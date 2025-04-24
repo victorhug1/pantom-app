@@ -1,15 +1,17 @@
 import { useState, useEffect } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
 const navItems = [
-  { name: "Inicio", href: "/" },
-  { name: "Servicios", href: "/services" },
-  { name: "Portafolio", href: "/portfolio" },
-  { name: "Contacto", href: "/contact" },
+  { name: "Servicios", href: "/servicios" },
+  { name: "Enfoque", href: "/enfoque" },
+  { name: "Casos de Éxito", href: "/casos" },
+  { name: "Blog", href: "/blog" },
+  { name: "Nosotros", href: "/nosotros" },
+  { name: "Contacto", href: "/contacto" },
 ];
 
 const menuVariants = {
@@ -41,7 +43,9 @@ const itemVariants = {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDark, setIsDark] = useState(false);
   const router = useRouter();
+  const { locale } = router;
 
   useEffect(() => {
     const onScroll = () => {
@@ -51,6 +55,35 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    // Check for saved theme preference or use system preference
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+      setIsDark(true);
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const newTheme = !isDark;
+    setIsDark(newTheme);
+    
+    if (newTheme) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
+
+  const toggleLanguage = () => {
+    const newLocale = locale === 'es' ? 'en' : 'es';
+    router.push(router.pathname, router.asPath, { locale: newLocale });
+  };
+
   return (
     <motion.nav
       initial={{ y: -80 }}
@@ -58,7 +91,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`w-full fixed top-0 left-0 z-50 px-4 py-3 transition-all duration-300 ${
         scrolled
-          ? "bg-black/80 backdrop-blur-md shadow-lg"
+          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg"
           : "bg-transparent"
       }`}
     >
@@ -87,7 +120,7 @@ export default function Navbar() {
           </motion.span>
         </Link>
 
-        <div className="hidden md:flex gap-8">
+        <div className="hidden md:flex items-center gap-8">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -108,15 +141,44 @@ export default function Navbar() {
           ))}
         </div>
 
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-white p-2 rounded-lg hover:bg-white/10 transition-colors"
-          aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
-        >
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </motion.button>
+        <div className="flex items-center gap-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleTheme}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label={isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
+          >
+            {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-gray-600" />}
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={toggleLanguage}
+            className="hidden md:block text-sm font-medium text-white hover:text-[#ea5a19] transition-colors"
+          >
+            {locale.toUpperCase()}
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="hidden md:block bg-[#ea5a19] text-white px-4 py-2 rounded-lg hover:bg-[#ff8f59] transition-colors"
+          >
+            Agendar Consulta
+          </motion.button>
+
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden text-gray-800 dark:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </motion.button>
+        </div>
       </div>
 
       <AnimatePresence>
@@ -126,7 +188,7 @@ export default function Navbar() {
             animate="open"
             exit="closed"
             variants={menuVariants}
-            className="md:hidden mt-4 flex flex-col gap-4 bg-black/95 backdrop-blur-md p-6 rounded-2xl border border-white/10"
+            className="md:hidden mt-4 flex flex-col gap-4 bg-white dark:bg-gray-900 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-800"
           >
             {navItems.map((item) => (
               <motion.div
@@ -139,7 +201,7 @@ export default function Navbar() {
                   className={`block text-lg transition-colors duration-300 ${
                     router.pathname === item.href
                       ? "text-[#ea5a19]"
-                      : "text-white hover:text-[#ea5a19]"
+                      : "text-gray-800 dark:text-white hover:text-[#ea5a19]"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >
@@ -147,6 +209,17 @@ export default function Navbar() {
                 </Link>
               </motion.div>
             ))}
+            <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
+              <button
+                onClick={toggleLanguage}
+                className="text-sm font-medium text-gray-800 dark:text-white hover:text-[#ea5a19] transition-colors"
+              >
+                {locale.toUpperCase()}
+              </button>
+              <button className="bg-[#ea5a19] text-white px-4 py-2 rounded-lg hover:bg-[#ff8f59] transition-colors">
+                Agendar Consulta
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

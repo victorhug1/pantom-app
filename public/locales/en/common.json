@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "services": "Services",
+    "approach": "Approach",
+    "success": "Success Stories",
+    "blog": "Blog",
+    "about": "About Us",
+    "contact": "Contact",
+    "schedule": "Schedule Consultation"
+  },
+  "hero": {
+    "title": "Digital Studio Specialized in Web Development and Custom Data Solutions",
+    "subtitle": "We create custom digital solutions: from optimized databases and intuitive web applications to SEO strategies that drive your growth.",
+    "cta": "Schedule Strategic Consultation",
+    "learnMore": "View Our Services"
+  }
+} 
