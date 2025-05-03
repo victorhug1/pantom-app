@@ -91,7 +91,7 @@ export default function Navbar() {
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`w-full fixed top-0 left-0 z-50 px-4 py-3 transition-all duration-300 ${
         scrolled
-          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-lg"
+          ? "bg-[#333333]/80 dark:bg-[#333333]/80 backdrop-blur-md shadow-lg"
           : "bg-transparent"
       }`}
     >
@@ -120,7 +120,7 @@ export default function Navbar() {
           </motion.span>
         </Link>
 
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-8">
           {navItems.map((item) => (
             <Link
               key={item.name}
@@ -156,7 +156,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleLanguage}
-            className="hidden md:block text-sm font-medium text-white hover:text-[#ea5a19] transition-colors"
+            className="hidden lg:block text-sm font-medium text-white hover:text-[#ea5a19] transition-colors"
           >
             {locale.toUpperCase()}
           </motion.button>
@@ -164,7 +164,7 @@ export default function Navbar() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="hidden md:block bg-[#ea5a19] text-white px-4 py-2 rounded-lg hover:bg-[#ff8f59] transition-colors"
+            className="hidden lg:block bg-[#ea5a19] text-white px-4 py-2 rounded-lg hover:bg-[#ff8f59] transition-colors"
           >
             Agendar Consulta
           </motion.button>
@@ -173,7 +173,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-800 dark:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className="lg:hidden text-gray-800 dark:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -188,7 +188,7 @@ export default function Navbar() {
             animate="open"
             exit="closed"
             variants={menuVariants}
-            className="md:hidden mt-4 flex flex-col gap-4 bg-white dark:bg-gray-900 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-800"
+            className="lg:hidden mt-4 flex flex-col gap-4 bg-white dark:bg-gray-900 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-800"
           >
             {navItems.map((item) => (
               <motion.div
@@ -201,7 +201,7 @@ export default function Navbar() {
                   className={`block text-lg transition-colors duration-300 ${
                     router.pathname === item.href
                       ? "text-[#ea5a19]"
-                      : "text-gray-800 dark:text-white hover:text-[#ea5a19]"
+                      : "text-gray-800 dark:text-white hover:text-[#333333]"
                   }`}
                   onClick={() => setIsOpen(false)}
                 >

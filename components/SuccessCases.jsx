@@ -58,27 +58,26 @@ const successCases = [
 
 export default function SuccessCases() {
   return (
-    <section className="py-24 bg-gray-50">
+    <section className="relative py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
-          className="text-center max-w-3xl mx-auto mb-16"
+          className="text-center max-w-3xl mx-auto mb-20"
         >
           <motion.h2
             variants={itemVariants}
-            className="text-3xl sm:text-4xl font-bold text-black mb-6 leading-tight"
+            className="text-3xl sm:text-4xl font-bold text-white mb-6 leading-tight"
           >
-            Resultados Reales para Nuestros Clientes
+            Casos de Éxito
           </motion.h2>
           <motion.p
             variants={itemVariants}
-            className="text-lg text-gray-700 leading-relaxed"
+            className="text-lg text-gray-300 leading-relaxed"
           >
-            Nos apasiona ver cómo las soluciones digitales adecuadas generan un impacto real. 
-            Aquí algunos ejemplos de los desafíos que hemos ayudado a superar.
+            Descubre cómo hemos ayudado a empresas a alcanzar sus objetivos digitales.
           </motion.p>
         </motion.div>
 
@@ -89,9 +88,9 @@ export default function SuccessCases() {
           viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {successCases.map((caseItem) => (
+          {successCases.map((item, index) => (
             <motion.div
-              key={caseItem.id}
+              key={item.id}
               variants={itemVariants}
               whileHover={{ 
                 y: -8,
@@ -99,41 +98,56 @@ export default function SuccessCases() {
               }}
               className="group"
             >
-              <div className="bg-white rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 h-full overflow-hidden">
-                <div className="relative h-48 w-full">
+              <Link
+                href={item.link}
+                className="block relative overflow-hidden rounded-xl h-full bg-[#1a1a1a]/50 border border-white/10"
+              >
+                <div className="aspect-[4/3] relative">
                   <Image
-                    src={caseItem.image}
-                    alt={`Screenshot del proyecto ${caseItem.title} desarrollado por Pantom`}
+                    src={item.image}
+                    alt={item.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 </div>
                 <div className="p-6">
-                  <span className="text-sm font-medium text-[#ea5a19] mb-2 block">
-                    {caseItem.industry}
+                  <span className="inline-block px-3 py-1 text-sm font-medium text-primary bg-primary/10 rounded-full mb-4">
+                    {item.industry}
                   </span>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
-                    {caseItem.title}
+                  <h3 className="text-2xl font-semibold text-white mb-2 group-hover:text-primary transition-colors duration-300">
+                    {item.title}
                   </h3>
-                  <p className="text-gray-600 mb-4">
-                    {caseItem.description}
+                  <p className="text-gray-300 text-lg mb-4">
+                    {item.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-[#ea5a19]">
-                      {caseItem.result}
-                    </span>
-                    <Link
-                      href={caseItem.link}
-                      className="inline-flex items-center text-[#ea5a19] hover:text-[#ff8f59] transition-colors duration-300 group text-sm font-medium"
-                    >
-                      <span className="mr-2">Ver caso completo</span>
-                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                    </Link>
+                    <span className="text-primary font-medium">{item.result}</span>
+                    <div className="flex items-center text-primary group-hover:translate-x-2 transition-transform duration-300">
+                      <span className="mr-2">Ver caso</span>
+                      <ArrowRight className="w-5 h-5" />
+                    </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
+        </motion.div>
+
+        <motion.div
+          variants={itemVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          className="text-center mt-16"
+        >
+          <Link
+            href="/casos"
+            className="inline-flex items-center text-primary hover:text-primary/80 transition-colors duration-300 group text-lg font-medium"
+          >
+            <span className="mr-2">Ver todos los casos</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+          </Link>
         </motion.div>
       </div>
     </section>

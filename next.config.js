@@ -5,6 +5,21 @@ const nextConfig = {
     locales: ['es', 'en'],
     defaultLocale: 'es',
   },
+  // Excluir páginas de la generación estática
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
+  // Configuración para excluir páginas dinámicas de la generación estática
+  experimental: {
+    isrMemoryCacheSize: 0,
+  },
+  // Excluir rutas específicas de la generación estática
+  async rewrites() {
+    return [
+      {
+        source: '/blog/:slug',
+        destination: '/blog/[slug]',
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig; 

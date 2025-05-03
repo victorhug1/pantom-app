@@ -34,7 +34,7 @@ export default function Hero() {
   };
 
   return (
-    <section className="relative min-h-[85vh] landscape:min-h-[100vh] w-full overflow-hidden flex flex-col items-center justify-start pt-24 sm:pt-32 md:pt-24 landscape:pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <div 
         className="absolute inset-0"
@@ -66,44 +66,38 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Content Container */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center mt-4 sm:mt-0 landscape:mt-4">
+      <div className="container relative z-10 mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-screen">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-3xl mx-auto text-center flex flex-col items-center"
+          className="text-center max-w-3xl mx-auto"
         >
-          {/* Main Heading */}
           <motion.h1
             variants={itemVariants}
-            className="text-2xl sm:text-3xl md:text-5xl landscape:text-2xl font-bold text-foreground mb-6 landscape:mb-4 leading-tight text-center"
+            className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl"
           >
             Estudio Digital Especializado en Desarrollo Web y Soluciones de Datos a Medida
           </motion.h1>
-
-          {/* Subheading */}
           <motion.p
             variants={itemVariants}
-            className="text-base sm:text-lg landscape:text-base text-foreground/80 mb-10 landscape:mb-8 max-w-2xl mx-auto leading-relaxed text-center"
+            className="mt-6 text-lg text-muted-foreground"
           >
             Creamos soluciones digitales a medida: desde bases de datos optimizadas y aplicaciones web intuitivas hasta estrategias SEO que impulsan tu crecimiento.
           </motion.p>
-
-          {/* CTA Buttons */}
           <motion.div
             variants={itemVariants}
-            className="flex flex-col landscape:flex-row w-full gap-4 justify-center items-center"
+            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
           >
             <Link
               href="/contacto"
-              className="inline-flex w-full sm:w-auto items-center justify-center px-8 py-4 landscape:py-3 text-lg font-medium text-primary-foreground bg-primary rounded-lg hover:bg-primary/90 transition-colors duration-300"
+              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
             >
               Agendar Consulta Estratégica
             </Link>
             <Link
               href="/servicios"
-              className="inline-flex w-full sm:w-auto items-center justify-center px-8 py-4 landscape:py-3 text-lg font-medium text-foreground border-2 border-foreground rounded-lg hover:bg-foreground/10 transition-colors duration-300"
+              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-base font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
             >
               Ver Nuestros Servicios
             </Link>
@@ -111,32 +105,16 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.button
         onClick={scrollToNextSection}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-6 sm:bottom-4 md:bottom-6 landscape:bottom-4 left-1/2 transform -translate-x-1/2 cursor-pointer group"
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10 flex flex-col items-center text-muted-foreground hover:text-foreground transition-colors"
         aria-label="Scroll to next section"
       >
-        <div className="w-6 h-10 sm:w-8 sm:h-12 md:w-10 md:h-16 landscape:w-8 landscape:h-8 border-2 border-foreground/30 rounded-full flex justify-center p-1 group-hover:border-foreground/60 transition-colors">
-          <motion.div
-            animate={{
-              y: [0, 6, 0]
-            }}
-            transition={{
-              duration: 1.5,
-              repeat: Infinity,
-              repeatType: "loop"
-            }}
-            className="w-1 h-1 bg-foreground rounded-full"
-          />
-        </div>
-        <ChevronDown 
-          className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-foreground/30 group-hover:text-foreground/60 transition-colors"
-          size={16}
-        />
+        <span className="text-sm mb-2">Scroll to next section</span>
+        <ChevronDown className="h-6 w-6 animate-bounce" />
       </motion.button>
     </section>
   );

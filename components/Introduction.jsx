@@ -60,8 +60,20 @@ const servicePoints = [
 
 export default function Introduction() {
   return (
-    <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative py-24 overflow-hidden">
+      {/* Fondo con gradiente oscuro */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/50 via-[#0a0a0a] to-[#000000]" />
+      
+      {/* Patrón de cuadrícula y puntos con fade out */}
+      <div className="absolute inset-0">
+        {/* Grid lines con fade out */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,var(--foreground)_1px,transparent_1px),linear-gradient(to_bottom,var(--foreground)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)] opacity-[0.05]" />
+        
+        {/* Dots pattern con fade out */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--foreground)_1px,transparent_1px)] bg-[size:1.5rem_1.5rem] [mask-image:linear-gradient(to_bottom,black_0%,black_50%,transparent_100%)] opacity-[0.03]" />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -71,13 +83,13 @@ export default function Introduction() {
         >
           <motion.h2
             variants={itemVariants}
-            className="text-3xl sm:text-4xl font-bold text-black mb-6 leading-tight"
+            className="text-3xl sm:text-4xl font-bold text-white mb-6 leading-tight"
           >
             Soluciones Digitales a Medida para Impulsar tu Crecimiento
           </motion.h2>
           <motion.p
             variants={itemVariants}
-            className="text-lg text-gray-700 leading-relaxed"
+            className="text-lg text-gray-300 leading-relaxed"
           >
             Como tu estudio digital dedicado, colaboramos estrechamente para entender tus desafíos y construir la tecnología precisa que necesitas, desde la optimización de datos hasta la experiencia web perfecta.
           </motion.p>
@@ -102,7 +114,7 @@ export default function Introduction() {
             >
               <Link
                 href={point.link}
-                className="block p-8 bg-card border border-border shadow-sm hover:shadow-xl transition-all duration-300 h-full relative overflow-hidden rounded-xl"
+                className="block p-8 bg-[#1a1a1a]/50 border border-white/10 shadow-sm hover:shadow-xl transition-all duration-300 h-full relative overflow-hidden rounded-xl backdrop-blur-sm"
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="flex flex-col h-full relative">
@@ -112,10 +124,10 @@ export default function Introduction() {
                       aria-hidden="true"
                     />
                   </div>
-                  <h3 className="text-2xl font-semibold text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-2xl font-semibold text-white mb-4 group-hover:text-primary transition-colors duration-300">
                     {point.title}
                   </h3>
-                  <p className="text-foreground/70 flex-grow text-lg leading-relaxed">
+                  <p className="text-gray-300 flex-grow text-lg leading-relaxed">
                     {point.description}
                   </p>
                 </div>
