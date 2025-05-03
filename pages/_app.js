@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
+import Head from "next/head";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,8 +21,15 @@ export default function App({ Component, pageProps }) {
   }, []);
 
   return (
-    <main className={inter.className}>
-      <Component {...pageProps} />
-    </main>
+    <>
+      <Head>
+        <link rel="icon" href="/pantom_logo.svg" />
+        <link rel="apple-touch-icon" href="/pantom_logo.svg" />
+        <meta name="theme-color" content="#000000" />
+      </Head>
+      <main className={inter.className}>
+        <Component {...pageProps} />
+      </main>
+    </>
   );
 }
