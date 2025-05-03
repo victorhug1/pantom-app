@@ -86,98 +86,54 @@ export default function Navbar() {
 
   return (
     <motion.nav
-      initial={{ y: -80 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`w-full fixed top-0 left-0 z-50 px-4 py-3 transition-all duration-300 ${
-        scrolled
-          ? "bg-[#333333]/80 dark:bg-[#333333]/80 backdrop-blur-md shadow-lg"
-          : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-300 ${
+        scrolled ? 'bg-black backdrop-blur-md' : 'bg-transparent'
       }`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
+      <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ${
+        scrolled ? 'border-b border-white/5' : ''
+      }`}>
+        <div className="flex items-center justify-between h-20">
+          <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/pantom_logo.svg"
               alt="Pantom Digital Studio"
-              width={36}
-              height={36}
-              priority
-              className="transition-transform duration-300 group-hover:rotate-12"
+              width={32}
+              height={32}
+              className="w-8 h-8"
             />
-          </motion.div>
-          <motion.span 
-            className="text-xl font-bold bg-gradient-to-r from-[#ea5a19] to-[#ff8f59] bg-clip-text text-transparent"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400, damping: 17 }}
-          >
-            Pantom
-          </motion.span>
-        </Link>
+            <span className="text-xl font-bold text-white">Pantom</span>
+          </Link>
 
-        <div className="hidden lg:flex items-center gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className="relative group"
-            >
-              <span className={`text-sm font-medium transition-colors duration-300 ${
-                router.pathname === item.href
-                  ? "text-[#ea5a19]"
-                  : "text-white group-hover:text-[#ea5a19]"
-              }`}>
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center space-x-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-white hover:text-primary transition-colors"
+              >
                 {item.name}
-              </span>
-              <span className={`absolute -bottom-1 left-0 w-0 h-0.5 bg-[#ea5a19] transition-all duration-300 group-hover:w-full ${
-                router.pathname === item.href ? "w-full" : "w-0"
-              }`} />
+              </Link>
+            ))}
+            <Link
+              href="/contacto"
+              className="px-4 py-2 text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+            >
+              Contactar
             </Link>
-          ))}
-        </div>
+          </div>
 
-        <div className="flex items-center gap-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            aria-label={isDark ? "Cambiar a tema claro" : "Cambiar a tema oscuro"}
+          {/* Mobile Navigation Button */}
+          <button
+            onClick={() => setIsOpen(true)}
+            className="md:hidden p-2 text-white hover:text-primary transition-colors"
           >
-            {isDark ? <Sun size={20} className="text-yellow-400" /> : <Moon size={20} className="text-gray-600" />}
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={toggleLanguage}
-            className="hidden lg:block text-sm font-medium text-white hover:text-[#ea5a19] transition-colors"
-          >
-            {locale.toUpperCase()}
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="hidden lg:block bg-[#ea5a19] text-white px-4 py-2 rounded-lg hover:bg-[#ff8f59] transition-colors"
-          >
-            Agendar Consulta
-          </motion.button>
-
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden text-gray-800 dark:text-white p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-            aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </motion.button>
+            <Menu className="w-6 h-6" />
+          </button>
         </div>
       </div>
 
@@ -223,6 +179,56 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <div className={`fixed inset-0 z-50 bg-black transition-opacity duration-300 ${
+        isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black to-black/95" />
+        <div className="relative h-full flex flex-col">
+          <div className="flex items-center justify-between p-6 border-b border-white/10">
+            <Link href="/" className="flex items-center space-x-2">
+              <Image
+                src="/pantom_logo.svg"
+                alt="Pantom Digital Studio"
+                width={32}
+                height={32}
+                className="w-8 h-8"
+              />
+              <span className="text-xl font-bold text-white">Pantom</span>
+            </Link>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-2 text-white hover:text-primary transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
+          </div>
+          <nav className="flex-1 px-6 py-8">
+            <ul className="space-y-6">
+              {navItems.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    className="block text-lg text-white hover:text-primary transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <div className="p-6 border-t border-white/10">
+            <Link
+              href="/contacto"
+              className="block w-full px-6 py-3 text-center text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
+              onClick={() => setIsOpen(false)}
+            >
+              Contactar
+            </Link>
+          </div>
+        </div>
+      </div>
     </motion.nav>
   );
 }

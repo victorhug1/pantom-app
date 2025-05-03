@@ -166,6 +166,8 @@ export default function BlogSection() {
               </SwiperSlide>
             ))}
           </Swiper>
+          <div className="swiper-button-prev !w-8 !h-8 !bg-white/5 hover:!bg-white/10 !rounded-full after:!text-white after:!text-sm after:!opacity-70 hover:after:!opacity-100 transition-all duration-300" />
+          <div className="swiper-button-next !w-8 !h-8 !bg-white/5 hover:!bg-white/10 !rounded-full after:!text-white after:!text-sm after:!opacity-70 hover:after:!opacity-100 transition-all duration-300" />
         </motion.div>
 
         <motion.div
