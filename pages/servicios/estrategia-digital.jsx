@@ -31,7 +31,7 @@ export default function EstrategiaDigital() {
         {/* Encabezado */}
         <section className="max-w-4xl mx-auto px-4 pt-16 pb-8 text-center">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6">
-            Estrategia Digital Clara: Tu Hoja de Ruta hacia el Éxito Online
+            Estrategia digital clara - Tu Hoja de ruta hacia el éxito online
           </h1>
           <p className="text-lg text-gray-300 mb-8">
             El éxito digital no sucede por casualidad, requiere un plan. En Pantom, te ayudamos a definir ese plan. Analizamos tu negocio, tu mercado y tus objetivos para crear estrategias digitales accionables y personalizadas que te guíen en la toma de decisiones y la optimización de tus recursos.
