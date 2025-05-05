@@ -77,13 +77,13 @@ export default function Hero() {
             variants={itemVariants}
             className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl"
           >
-            Estudio Digital Especializado en Desarrollo Web y Soluciones de Datos a Medida
+            Estudio digital especializado en desarrollo web y soluciones de datos a medida
           </motion.h1>
           <motion.p
             variants={itemVariants}
             className="mt-6 text-lg text-muted-foreground"
           >
-            Creamos soluciones digitales a medida: desde bases de datos optimizadas y aplicaciones web intuitivas hasta estrategias SEO que impulsan tu crecimiento.
+            Creamos soluciones digitales personalizadas: desde bases de datos optimizadas y aplicaciones web intuitivas hasta estrategias SEO que impulsan tu crecimiento.
           </motion.p>
           <motion.div
             variants={itemVariants}
@@ -93,13 +93,13 @@ export default function Hero() {
               href="/contacto"
               className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
             >
-              Agendar Consulta Estratégica
+              Agendar consulta estratégica
             </Link>
             <Link
               href="/servicios"
               className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-base font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
             >
-              Ver Nuestros Servicios
+              Ver nuestros servicios
             </Link>
           </motion.div>
         </motion.div>

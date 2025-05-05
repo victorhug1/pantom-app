@@ -45,7 +45,7 @@ export default function FinalCTA() {
               variants={itemVariants}
               className="text-3xl sm:text-4xl font-bold text-white mb-6 leading-tight"
             >
-              ¿Listo para Transformar tu Presencia Digital?
+              ¿Listo para transformar tu presencia digital?
             </motion.h2>
             <motion.p
               variants={itemVariants}
@@ -61,13 +61,13 @@ export default function FinalCTA() {
                 href="/contacto"
                 className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background transition-colors"
               >
-                Agendar Consulta
+                Agendar consulta
               </Link>
               <Link
                 href="/casos"
                 className="inline-flex items-center justify-center px-6 py-3 bg-white/5 text-white font-medium rounded-lg hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-background transition-colors"
               >
-                Ver Casos de Éxito
+                Ver casos de éxito
               </Link>
             </motion.div>
           </motion.div>

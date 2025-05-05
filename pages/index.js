@@ -48,19 +48,19 @@ export default function Home() {
         alternateLocales={locale === 'es' ? ['en_US'] : ['es_ES']}
         structuredData={structuredData}
       />
-      <Layout>
-        <Head>
-          <title>Pantom Digital Studio</title>
-          <meta name="description" content="Estudio digital especializado en SEO, marketing digital y desarrollo web. Elevamos tu marca en el entorno online." />
-          <link rel="icon" href="/pantom_logo.svg" />
-        </Head> 
-        <Hero />
+    <Layout>
+      <Head>
+        <title>Pantom Digital Studio</title>
+        <meta name="description" content="Estudio digital especializado en SEO, marketing digital y desarrollo web. Elevamos tu marca en el entorno online." />
+        <link rel="icon" href="/pantom_logo.svg" />
+      </Head> 
+      <Hero />
         <Introduction />
         <Process />
         <SuccessCases />
         <BlogSection />
         <FinalCTA />
-      </Layout>
+    </Layout>
     </>
   );
 }

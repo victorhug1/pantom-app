@@ -99,46 +99,46 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/pantom_logo.svg"
-              alt="Pantom Digital Studio"
+                src="/pantom_logo.svg"
+                alt="Pantom Digital Studio"
               width={32}
               height={32}
               className="w-8 h-8"
             />
             <span className="text-xl font-bold text-white">Pantom</span>
-          </Link>
+            </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
                 className="text-white hover:text-primary transition-colors"
-              >
-                {item.name}
-              </Link>
-            ))}
+            >
+              {item.name}
+            </Link>
+          ))}
             <Link
               href="/contacto"
               className="px-4 py-2 text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
             >
               Contactar
             </Link>
-          </div>
+        </div>
 
           {/* Mobile Navigation Button */}
-          <button
+        <button
             onClick={() => setIsOpen(true)}
             className="md:hidden p-2 text-white hover:text-primary transition-colors"
-          >
+        >
             <Menu className="w-6 h-6" />
-          </button>
+        </button>
         </div>
       </div>
 
       <AnimatePresence>
-        {isOpen && (
+      {isOpen && (
           <motion.div
             initial="closed"
             animate="open"
@@ -205,7 +205,7 @@ export default function Navbar() {
           </div>
           <nav className="flex-1 px-6 py-8">
             <ul className="space-y-6">
-              {navItems.map((item) => (
+          {navItems.map((item) => (
                 <li key={item.name}>
                   <Link
                     href={item.href}

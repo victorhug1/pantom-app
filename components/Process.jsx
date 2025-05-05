@@ -54,7 +54,7 @@ const steps = [
 
 export default function Process() {
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-10 overflow-hidden">
       {/* Efecto de luces naranjas en el centro */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Círculo central con glow */}

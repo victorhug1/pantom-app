@@ -27,9 +27,9 @@ export default function App({ Component, pageProps }) {
         <link rel="apple-touch-icon" href="/pantom_logo.svg" />
         <meta name="theme-color" content="#000000" />
       </Head>
-      <main className={inter.className}>
-        <Component {...pageProps} />
-      </main>
+    <main className={inter.className}>
+      <Component {...pageProps} />
+    </main>
     </>
   );
 }

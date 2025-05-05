@@ -69,7 +69,7 @@ const itemVariants = {
 
 export default function BlogSection() {
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-10 overflow-hidden">
       {/* Efecto de luces naranjas en el centro */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Círculo central con glow */}
@@ -113,7 +113,10 @@ export default function BlogSection() {
             modules={[Navigation, Pagination]}
             spaceBetween={24}
             slidesPerView={1}
-            navigation
+            navigation={{
+              nextEl: '.blog-swiper-next',
+              prevEl: '.blog-swiper-prev',
+            }}
             pagination={{ clickable: true }}
             breakpoints={{
               640: { slidesPerView: 2 },
@@ -166,8 +169,8 @@ export default function BlogSection() {
               </SwiperSlide>
             ))}
           </Swiper>
-          <div className="swiper-button-prev !w-8 !h-8 !bg-white/5 hover:!bg-white/10 !rounded-full after:!text-white after:!text-sm after:!opacity-70 hover:after:!opacity-100 transition-all duration-300" />
-          <div className="swiper-button-next !w-8 !h-8 !bg-white/5 hover:!bg-white/10 !rounded-full after:!text-white after:!text-sm after:!opacity-70 hover:after:!opacity-100 transition-all duration-300" />
+          <div className="blog-swiper-prev swiper-button-prev !w-8 !h-8 !bg-white/5 hover:!bg-white/10 !rounded-full after:!text-white after:!text-sm after:!opacity-70 hover:after:!opacity-100 transition-all duration-300" />
+          <div className="blog-swiper-next swiper-button-next !w-8 !h-8 !bg-white/5 hover:!bg-white/10 !rounded-full after:!text-white after:!text-sm after:!opacity-70 hover:after:!opacity-100 transition-all duration-300" />
         </motion.div>
 
         <motion.div
@@ -195,8 +198,12 @@ export default function BlogSection() {
         .blog-swiper .swiper-button-prev {
           color: var(--primary);
         }
-        .blog-swiper .swiper-pagination-bullet-active {
-          background: var(--primary);
+        .swiper-pagination-bullet {
+          background: #666666 !important;
+          opacity: 1 !important;
+        }
+        .swiper-pagination-bullet-active {
+          background: #fff !important;
         }
       `}</style>
     </section>

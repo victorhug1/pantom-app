@@ -85,7 +85,7 @@ export default function Introduction() {
             variants={itemVariants}
             className="text-3xl sm:text-4xl font-bold text-white mb-6 leading-tight"
           >
-            Soluciones Digitales a Medida para Impulsar tu Crecimiento
+            Tecnología estratégica para tu crecimiento digital
           </motion.h2>
           <motion.p
             variants={itemVariants}
