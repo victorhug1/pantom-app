@@ -2,6 +2,7 @@ import "@/styles/globals.css";
 import { Inter } from "next/font/google";
 import { useEffect } from "react";
 import Head from "next/head";
+import FloatingContactButton from "@/components/FloatingContactButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,9 +28,10 @@ export default function App({ Component, pageProps }) {
         <link rel="apple-touch-icon" href="/pantom_logo.svg" />
         <meta name="theme-color" content="#000000" />
       </Head>
-    <main className={inter.className}>
-      <Component {...pageProps} />
-    </main>
+      <main className={inter.className}>
+        <Component {...pageProps} />
+        <FloatingContactButton />
+      </main>
     </>
   );
 }

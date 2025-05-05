@@ -6,9 +6,13 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 
 const navItems = [
-  { name: "Servicios", href: "/servicios" },
+  { name: "Servicios", href: "/servicios", submenu: [
+    { name: "Desarrollo web a medida", href: "/servicios/desarrollo-web" },
+    { name: "Inteligencia de datos y bases de datos", href: "/servicios/bases-de-datos" },
+    { name: "Visibilidad y SEO estratégico", href: "/servicios/seo" },
+    { name: "Consultoría en Estrategia Digital", href: "/servicios/estrategia-digital" },
+  ] },
   { name: "Enfoque", href: "/enfoque" },
-  { name: "Casos de Éxito", href: "/casos" },
   { name: "Blog", href: "/blog" },
   { name: "Nosotros", href: "/nosotros" },
   { name: "Contacto", href: "/contacto" },
@@ -44,8 +48,10 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [isDark, setIsDark] = useState(false);
+  const [showServices, setShowServices] = useState(false);
+  const [showServicesMobile, setShowServicesMobile] = useState(false);
   const router = useRouter();
-  const { locale } = router;
+  const { locale, asPath } = router;
 
   useEffect(() => {
     const onScroll = () => {
@@ -80,8 +86,8 @@ export default function Navbar() {
   };
 
   const toggleLanguage = () => {
-    const newLocale = locale === 'es' ? 'en' : 'es';
-    router.push(router.pathname, router.asPath, { locale: newLocale });
+    const nextLocale = locale === 'es' ? 'en' : 'es';
+    router.push(asPath, asPath, { locale: nextLocale });
   };
 
   return (
@@ -110,30 +116,74 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-                className="text-white hover:text-primary transition-colors"
+            {navItems.map((item) =>
+              item.submenu ? (
+                <div
+                  key={item.name}
+                  className="relative group"
+                  onMouseEnter={() => setShowServices(true)}
+                  onMouseLeave={() => setShowServices(false)}
+                >
+                  <Link
+                    href={item.href}
+                    className="text-white hover:text-primary transition-colors flex items-center gap-1"
+                  >
+                    {item.name}
+                    <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                  </Link>
+                  {showServices && (
+                    <div className="absolute left-0 w-64" style={{ top: '100%', height: '16px' }} />
+                  )}
+                  {showServices && (
+                    <div className="absolute left-0 mt-4 w-64 bg-[#181818] border border-white/10 rounded-xl shadow-lg z-20"
+                      onMouseEnter={() => setShowServices(true)}
+                      onMouseLeave={() => setShowServices(false)}
+                    >
+                      {item.submenu.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          href={sub.href}
+                          className="block px-6 py-3 text-white hover:text-primary hover:bg-white/5 transition-colors"
+                          onClick={() => setShowServices(false)}
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  className="text-white hover:text-primary transition-colors"
+                >
+                  {item.name}
+                </Link>
+              )
+            )}
+            <button
+              className="px-3 py-1 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium ml-2"
+              onClick={toggleLanguage}
+              aria-label="Cambiar idioma"
             >
-              {item.name}
-            </Link>
-          ))}
+              {locale === 'es' ? 'English' : 'Español'}
+            </button>
             <Link
               href="/contacto"
               className="px-4 py-2 text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
             >
               Contactar
             </Link>
-        </div>
+          </div>
 
           {/* Mobile Navigation Button */}
-        <button
-            onClick={() => setIsOpen(true)}
-            className="md:hidden p-2 text-white hover:text-primary transition-colors"
-        >
-            <Menu className="w-6 h-6" />
-        </button>
+          <button
+              onClick={() => setIsOpen(true)}
+              className="md:hidden p-2 text-white hover:text-primary transition-colors"
+          >
+              <Menu className="w-6 h-6" />
+          </button>
         </div>
       </div>
 
@@ -146,34 +196,58 @@ export default function Navbar() {
             variants={menuVariants}
             className="lg:hidden mt-4 flex flex-col gap-4 bg-white dark:bg-gray-900 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-800"
           >
-            {navItems.map((item) => (
-              <motion.div
-                key={item.name}
-                variants={itemVariants}
-                className="overflow-hidden"
-              >
-                <Link
-                  href={item.href}
-                  className={`block text-lg transition-colors duration-300 ${
-                    router.pathname === item.href
-                      ? "text-[#ea5a19]"
-                      : "text-gray-800 dark:text-white hover:text-[#333333]"
-                  }`}
-                  onClick={() => setIsOpen(false)}
+            {navItems.map((item) =>
+              item.submenu ? (
+                <div key={item.name}>
+                  <button
+                    className="flex items-center w-full text-lg text-gray-800 dark:text-white hover:text-primary transition-colors mb-2"
+                    onClick={() => setShowServicesMobile((v) => !v)}
+                  >
+                    {item.name}
+                    <svg className={`w-4 h-4 ml-2 transition-transform ${showServicesMobile ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                  </button>
+                  {showServicesMobile && (
+                    <div className="ml-4 border-l border-white/10 pl-4">
+                      {item.submenu.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          href={sub.href}
+                          className="block py-2 text-white hover:text-primary transition-colors"
+                          onClick={() => { setIsOpen(false); setShowServicesMobile(false); }}
+                        >
+                          {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <motion.div
+                  key={item.name}
+                  variants={itemVariants}
+                  className="overflow-hidden"
                 >
-                  {item.name}
-                </Link>
-              </motion.div>
-            ))}
-            <div className="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-800">
+                  <Link
+                    href={item.href}
+                    className={`block text-lg transition-colors duration-300 ${
+                      router.pathname === item.href
+                        ? "text-[#ea5a19]"
+                        : "text-gray-800 dark:text-white hover:text-[#333333]"
+                    }`}
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
+              )
+            )}
+            <div className="mt-8">
               <button
+                className="w-full px-4 py-2 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium"
                 onClick={toggleLanguage}
-                className="text-sm font-medium text-gray-800 dark:text-white hover:text-[#ea5a19] transition-colors"
+                aria-label="Cambiar idioma"
               >
-                {locale.toUpperCase()}
-              </button>
-              <button className="bg-[#ea5a19] text-white px-4 py-2 rounded-lg hover:bg-[#ff8f59] transition-colors">
-                Agendar Consulta
+                {locale === 'es' ? 'English' : 'Español'}
               </button>
             </div>
           </motion.div>
@@ -205,18 +279,53 @@ export default function Navbar() {
           </div>
           <nav className="flex-1 px-6 py-8">
             <ul className="space-y-6">
-          {navItems.map((item) => (
-                <li key={item.name}>
-                  <Link
-                    href={item.href}
-                    className="block text-lg text-white hover:text-primary transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                </li>
-              ))}
+              {navItems.map((item) =>
+                item.submenu ? (
+                  <li key={item.name}>
+                    <button
+                      className="flex items-center w-full text-lg text-white hover:text-primary transition-colors mb-2"
+                      onClick={() => setShowServicesMobile((v) => !v)}
+                    >
+                      {item.name}
+                      <svg className={`w-4 h-4 ml-2 transition-transform ${showServicesMobile ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    {showServicesMobile && (
+                      <div className="ml-4 border-l border-white/10 pl-4">
+                        {item.submenu.map((sub) => (
+                          <Link
+                            key={sub.name}
+                            href={sub.href}
+                            className="block py-2 text-white hover:text-primary transition-colors"
+                            onClick={() => { setIsOpen(false); setShowServicesMobile(false); }}
+                          >
+                            {sub.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                ) : (
+                  <li key={item.name}>
+                    <Link
+                      href={item.href}
+                      className="block text-lg text-white hover:text-primary transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.name}
+                    </Link>
+                  </li>
+                )
+              )}
             </ul>
+            <div className="mt-8">
+              <button
+                className="w-full px-4 py-2 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium"
+                onClick={toggleLanguage}
+                aria-label="Cambiar idioma"
+              >
+                {locale === 'es' ? 'English' : 'Español'}
+              </button>
+            </div>
           </nav>
           <div className="p-6 border-t border-white/10">
             <Link
