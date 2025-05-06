@@ -34,10 +34,10 @@ export default function BasesDeDatos() {
           <p className="text-lg text-gray-300 mb-8">
             Tus datos son uno de tus activos más valiosos. En Pantom, diseñamos, desarrollamos y administramos soluciones de bases de datos robustas, seguras y eficientes que te permiten no solo almacenar información, sino también extraer inteligencia, automatizar procesos y tomar decisiones informadas.
           </p>
-          {/* espacio para imagen
+
           <div className="flex justify-center mb-8">
             <Image
-              src="/images/pantom-data.jpg"
+              src="/images/services/Bases de datos a medida transforma tus datos en activos estratégicos.png"
               alt="Diagrama abstracto de flujo de datos y optimización de bases de datos por Pantom"
               className="w-full max-w-2xl rounded-xl shadow-lg"
               width={1200}
@@ -45,7 +45,6 @@ export default function BasesDeDatos() {
               loading="lazy"
             />
           </div>
-          */}
         </section>
 
         {/* Nuestros servicios de gestión de datos */}

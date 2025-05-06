@@ -66,43 +66,56 @@ export default function Hero() {
         </div>
       </div>
 
-      <div className="container relative z-10 mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-screen">
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-center max-w-3xl mx-auto"
-        >
-          <motion.h1
-            variants={itemVariants}
-            className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl"
-          >
-            Estudio digital especializado en desarrollo web y soluciones de datos a medida
-          </motion.h1>
-          <motion.p
-            variants={itemVariants}
-            className="mt-6 text-lg text-muted-foreground"
-          >
-            Creamos soluciones digitales personalizadas: desde bases de datos optimizadas y aplicaciones web intuitivas hasta estrategias SEO que impulsan tu crecimiento.
-          </motion.p>
+      {/* Grid principal Hero */}
+      <div className="container relative z-10 mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col min-h-screen justify-center">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+          {/* Columna izquierda: texto y CTA */}
           <motion.div
-            variants={itemVariants}
-            className="mt-10 flex flex-col sm:flex-row gap-4 justify-center"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="text-center lg:text-left max-w-3xl mx-auto lg:mx-0"
           >
-            <Link
-              href="/contacto"
-              className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+            <motion.h1
+              variants={itemVariants}
+              className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl md:text-6xl"
             >
-              Agendar consulta estratégica
-            </Link>
-            <Link
-              href="/servicios"
-              className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-base font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              Estudio digital especializado en desarrollo web y soluciones de datos a medida
+            </motion.h1>
+            <motion.p
+              variants={itemVariants}
+              className="mt-6 text-lg text-muted-foreground"
             >
-              Ver nuestros servicios
-            </Link>
+              Creamos soluciones digitales personalizadas: desde bases de datos optimizadas y aplicaciones web intuitivas hasta estrategias SEO que impulsan tu crecimiento.
+            </motion.p>
+            <motion.div
+              variants={itemVariants}
+              className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+            >
+              <Link
+                href="/contacto"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Agendar consulta estratégica
+              </Link>
+              <Link
+                href="/servicios"
+                className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-base font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
+              >
+                Ver nuestros servicios
+              </Link>
+            </motion.div>
           </motion.div>
-        </motion.div>
+          {/* Columna derecha: GIF */}
+          <div className="flex justify-center items-center">
+            <img
+              src="/images/tecnologias/data-pantom.png"
+              alt="Visualización de datos Pantom"
+              className="w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-auto object-contain opacity-90"
+              style={{ filter: 'drop-shadow(0 0 32px #0ff2)' }}
+            />
+          </div>
+        </div>
       </div>
 
       <motion.button

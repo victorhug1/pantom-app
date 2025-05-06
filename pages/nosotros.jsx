@@ -32,7 +32,7 @@ export default function Nosotros() {
           </p>
           <div className="flex justify-center mb-8">
             <Image
-              src="/images/nosotros-equipo.jpg"
+              src="/images/services/nosotros-equipo.png"
               alt="Equipo de Pantom Estudio Digital"
               className="w-full max-w-2xl rounded-xl shadow-lg"
               width={1200}

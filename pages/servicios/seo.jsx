@@ -35,10 +35,9 @@ export default function Seo() {
           <p className="text-lg text-gray-300 mb-8">
             En el competitivo mundo digital, no basta con tener una gran web, necesitas que te encuentren. En Pantom, desarrollamos e implementamos estrategias SEO integrales y sostenibles (white-hat) diseñadas no solo para mejorar tu ranking, sino para atraer tráfico cualificado que realmente impulse tu negocio.
           </p>
-          {/* espacio para imagen
           <div className="flex justify-center mb-8">
             <Image
-              src="/images/pantom-data.jpg"
+              src="/images/services/Visibilidad y SEO estratégico conecta con tu audiencia online.png"
               alt="Gráfico ilustrando el aumento de visibilidad online mediante servicios SEO de Pantom"
               className="w-full max-w-2xl rounded-xl shadow-lg"
               width={1200}
@@ -46,7 +45,6 @@ export default function Seo() {
               loading="lazy"
             />
           </div>
-          */}
         </section>
 
         {/* Nuestros servicios SEO al detalle */}

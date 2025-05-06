@@ -34,6 +34,7 @@ export default function Servicios() {
               {/* Desarrollo Web */}
               <div className="bg-[#181818]/70 border border-white/10 rounded-2xl p-8 flex flex-col items-start hover:shadow-xl transition-shadow group">
                 <Code className="w-10 h-10 text-[#ea5a19] mb-4" aria-hidden="true" />
+                {/* <Image src="/images/servicios/dev-illustration.svg" alt="Ilustración desarrollo web" width={80} height={80} className="mb-4" /> */}
                 <h2 className="text-2xl font-bold text-white mb-3">Desarrollo web a medida</h2>
                 <p className="text-gray-300 mb-6">
                   Creamos experiencias web únicas, desde aplicaciones complejas hasta sitios institucionales, usando tecnologías modernas como Next.js para asegurar rendimiento y escalabilidad.
@@ -49,6 +50,7 @@ export default function Servicios() {
               {/* Inteligencia de Datos */}
               <div className="bg-[#181818]/70 border border-white/10 rounded-2xl p-8 flex flex-col items-start hover:shadow-xl transition-shadow group">
                 <Database className="w-10 h-10 text-[#ea5a19] mb-4" aria-hidden="true" />
+                {/* <Image src="/images/servicios/data-illustration.svg" alt="Ilustración inteligencia de datos" width={80} height={80} className="mb-4" /> */}
                 <h2 className="text-2xl font-bold text-white mb-3">Inteligencia de datos y bases de datos</h2>
                 <p className="text-gray-300 mb-6">
                   Transformamos tus datos en activos valiosos. Diseñamos, desarrollamos y administramos bases de datos eficientes para análisis, automatización y toma de decisiones.
@@ -64,6 +66,7 @@ export default function Servicios() {
               {/* SEO */}
               <div className="bg-[#181818]/70 border border-white/10 rounded-2xl p-8 flex flex-col items-start hover:shadow-xl transition-shadow group">
                 <TrendingUp className="w-10 h-10 text-[#ea5a19] mb-4" aria-hidden="true" />
+                {/* <Image src="/images/servicios/seo-illustration.svg" alt="Ilustración SEO" width={80} height={80} className="mb-4" /> */}
                 <h2 className="text-2xl font-bold text-white mb-3">Visibilidad y SEO estratégico</h2>
                 <p className="text-gray-300 mb-6">
                   Aumentamos tu presencia online de forma sostenible. Implementamos estrategias SEO técnicas y de contenido para atraer tráfico cualificado y superar a tu competencia.
@@ -79,6 +82,7 @@ export default function Servicios() {
               {/* Estrategia Digital */}
               <div className="bg-[#181818]/70 border border-white/10 rounded-2xl p-8 flex flex-col items-start hover:shadow-xl transition-shadow group">
                 <Compass className="w-10 h-10 text-[#ea5a19] mb-4" aria-hidden="true" />
+                {/* <Image src="/images/servicios/estrategia-illustration.svg" alt="Ilustración estrategia digital" width={80} height={80} className="mb-4" /> */}
                 <h2 className="text-2xl font-bold text-white mb-3">Consultoría en estrategia digital</h2>
                 <p className="text-gray-300 mb-6">
                   Te ayudamos a navegar el panorama digital. Definimos hojas de ruta claras, evaluamos tecnologías y alineamos tus iniciativas digitales con tus objetivos de negocio.

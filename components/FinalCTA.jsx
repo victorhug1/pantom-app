@@ -63,12 +63,6 @@ export default function FinalCTA() {
               >
                 Agendar consulta
               </Link>
-              <Link
-                href="/casos"
-                className="inline-flex items-center justify-center px-6 py-3 bg-white/5 text-white font-medium rounded-lg hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-white/50 focus:ring-offset-2 focus:ring-offset-background transition-colors"
-              >
-                Ver casos de éxito
-              </Link>
             </motion.div>
           </motion.div>
 

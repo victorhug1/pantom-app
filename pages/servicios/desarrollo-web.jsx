@@ -24,7 +24,16 @@ export default function DesarrolloWeb() {
             Convertimos tus ideas en experiencias digitales excepcionales. En Pantom, nos especializamos en el desarrollo web a medida, creando desde sitios web institucionales hasta aplicaciones web complejas con un enfoque total en la calidad, el rendimiento y la experiencia del usuario final.
           </p>
         </section>
-
+        <div className="flex justify-center mb-8">
+            <Image
+              src="/images/services/Desarrollo web a medida aplicaciones rápidas y escalables.png"
+              alt="Desarrollo web a medida aplicaciones rápidas y escalables"
+              className="w-full max-w-2xl rounded-xl shadow-lg"
+              width={1200}
+              height={500}
+              loading="lazy"
+            />
+          </div>
         {/* ¿Qué incluye nuestro servicio? */}
         <section className="max-w-5xl mx-auto px-4 mb-16">
           <h2 className="text-2xl font-bold text-white mb-8 text-center">
