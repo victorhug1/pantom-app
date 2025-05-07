@@ -47,7 +47,6 @@ const itemVariants = {
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [isDark, setIsDark] = useState(false);
   const [showServices, setShowServices] = useState(false);
   const [showServicesMobile, setShowServicesMobile] = useState(false);
   const router = useRouter();
@@ -60,30 +59,6 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    // Check for saved theme preference or use system preference
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setIsDark(true);
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const newTheme = !isDark;
-    setIsDark(newTheme);
-    
-    if (newTheme) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-    }
-  };
 
   const toggleLanguage = () => {
     const nextLocale = locale === 'es' ? 'en' : 'es';
@@ -194,13 +169,13 @@ export default function Navbar() {
             animate="open"
             exit="closed"
             variants={menuVariants}
-            className="lg:hidden mt-4 flex flex-col gap-4 bg-white dark:bg-gray-900 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-800"
+            className="lg:hidden mt-4 flex flex-col gap-4 bg-[#181818] backdrop-blur-md p-6 rounded-2xl border border-white/10"
           >
             {navItems.map((item) =>
               item.submenu ? (
                 <div key={item.name}>
                   <button
-                    className="flex items-center w-full text-lg text-gray-800 dark:text-white hover:text-primary transition-colors mb-2"
+                    className="flex items-center w-full text-lg text-white hover:text-primary transition-colors mb-2"
                     onClick={() => setShowServicesMobile((v) => !v)}
                   >
                     {item.name}
@@ -232,7 +207,7 @@ export default function Navbar() {
                     className={`block text-lg transition-colors duration-300 ${
                       router.pathname === item.href
                         ? "text-[#ea5a19]"
-                        : "text-gray-800 dark:text-white hover:text-[#333333]"
+                        : "text-white hover:text-[#333333]"
                     }`}
                     onClick={() => setIsOpen(false)}
                   >

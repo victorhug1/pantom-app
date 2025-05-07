@@ -1,6 +1,5 @@
 import "@/styles/globals.css";
 import { Inter } from "next/font/google";
-import { useEffect } from "react";
 import Head from "next/head";
 import FloatingContactButton from "@/components/FloatingContactButton";
 
@@ -11,16 +10,6 @@ const inter = Inter({
 });
 
 export default function App({ Component, pageProps }) {
-  useEffect(() => {
-    // Check for saved theme preference or use system preference
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
   return (
     <>
       <Head>
