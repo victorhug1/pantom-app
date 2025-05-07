@@ -25,7 +25,7 @@ export default function Nosotros() {
         {/* Encabezado */}
         <section className="max-w-4xl mx-auto px-4 pt-16 pb-8 text-center">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6">
-            Somos Pantom: Tu Estudio Digital Colaborativo
+            Somos Pantom: Tu estudio digital colaborativo
           </h1>
           <p className="text-lg text-gray-300 mb-8">
             Más que una agencia, somos un estudio digital apasionado por la tecnología y los resultados tangibles. Desde Tunja, Boyacá, colaboramos estrechamente con negocios como el tuyo para diseñar y construir soluciones digitales a medida que realmente marcan la diferencia.
@@ -45,7 +45,7 @@ export default function Nosotros() {
         {/* Misión y Visión */}
         <section className="max-w-3xl mx-auto px-4 mb-16 text-center">
           <h2 className="text-2xl font-bold text-white mb-4">
-            Nuestra Misión: Impulsar tu Éxito Digital
+            Nuestra Misión: Impulsar tu éxito digital
           </h2>
           <p className="text-gray-300 text-lg mb-2">
             Existimos para ayudar a empresas y emprendedores a aprovechar el potencial de la tecnología. Nuestro propósito es crear soluciones digitales de calidad, personalizadas y alineadas con tus objetivos, construyendo relaciones de confianza y colaboración a largo plazo. No somos una agencia tradicional: somos tu socio estratégico en el mundo digital.
@@ -55,7 +55,7 @@ export default function Nosotros() {
         {/* Valores */}
         <section className="max-w-6xl mx-auto px-4 mb-16">
           <h2 className="text-2xl font-bold text-white mb-8 text-center">
-            Los Valores que nos Guían
+            Los valores que nos guían
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             <div className="bg-[#181818]/80 border border-white/10 rounded-2xl p-6 flex flex-col items-center hover:shadow-xl transition-shadow group">

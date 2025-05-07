@@ -26,7 +26,7 @@ export default function Contacto() {
         {/* Encabezado */}
         <section className="max-w-3xl mx-auto px-4 pt-16 pb-8 text-center">
           <h1 className="text-3xl sm:text-5xl font-bold text-white mb-6">
-            Hablemos: Contacta con Pantom Estudio Digital
+            Hablemos: Contacta con Pantom Digital Studio
           </h1>
           <p className="text-lg text-gray-300 mb-8">
             ¿Tienes un proyecto en mente, una pregunta sobre nuestros servicios o simplemente quieres explorar cómo podemos colaborar? Nos encantaría escucharte. Completa el formulario o utiliza nuestros datos de contacto directo.
