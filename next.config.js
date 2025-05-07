@@ -9,7 +9,7 @@ const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
   // Configuración para excluir páginas dinámicas de la generación estática
   experimental: {
-    isrMemoryCacheSize: 0,
+  //  isrMemoryCacheSize: 0,//descomentar para que no se cachee
   },
   // Excluir rutas específicas de la generación estática
   async rewrites() {

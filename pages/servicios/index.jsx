@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Code, Database, TrendingUp, Compass } from "lucide-react";
 import Image from "next/image";
 import Layout from "@/components/Layout";
-import ParticlesBackground from "@/components/ParticlesBackground";
+import ParticlesBackgroundServicios from "@/components/ParticlesBackgroundServicios";
 
 export default function Servicios() {
   return (
@@ -22,7 +22,7 @@ export default function Servicios() {
           <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[radial-gradient(circle,rgba(234,90,25,0.18)_0%,transparent_70%)] blur-2xl z-0" />
           <div className="absolute top-1/2 left-0 w-40 h-40 bg-[radial-gradient(circle,rgba(234,90,25,0.10)_0%,transparent_80%)] blur-2xl z-0" />
         </div>
-        <ParticlesBackground />
+        <ParticlesBackgroundServicios />
         <main className="relative z-10">
           {/* Encabezado */}
           <section className="max-w-4xl mx-auto px-4 pt-16 pb-8 text-center">

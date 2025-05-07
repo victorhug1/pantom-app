@@ -9,6 +9,12 @@ import FinalCTA from '../components/FinalCTA';
 import { motion } from "framer-motion";
 import SEO from '@/components/SEO';
 import { useRouter } from 'next/router';
+import dynamic from "next/dynamic";
+
+const ParticlesBackgroundServicios = dynamic(
+  () => import("@/components/ParticlesBackgroundServicios"),
+  { ssr: false }
+);
 
 export default function Home() {
   const router = useRouter();
@@ -54,12 +60,15 @@ export default function Home() {
         <meta name="description" content="Estudio digital especializado en SEO, marketing digital y desarrollo web. Elevamos tu marca en el entorno online." />
         <link rel="icon" href="/pantom_logo.svg" />
       </Head> 
-      <Hero />
+      <div className="relative min-h-screen">
+        <ParticlesBackgroundServicios />
+        <Hero />
         <Introduction />
         <Process />
         <SuccessCases />
         <BlogSection />
         <FinalCTA />
+      </div>
     </Layout>
     </>
   );
