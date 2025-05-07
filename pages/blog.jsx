@@ -8,33 +8,32 @@ import { Search, ArrowRight } from "lucide-react";
 // Datos mock para artículos (reemplazar por fetch a CMS o API real)
 const mockPosts = [
   {
-    slug: "tendencias-desarrollo-web-2024",
-    title: "Tendencias en Desarrollo Web para 2024",
-    excerpt: "Descubre las tecnologías y enfoques que marcarán el desarrollo web este año: frameworks, performance, accesibilidad y más.",
-    date: "2024-05-01",
+    slug: "seo-2025-estrategias-clave",
+    title: "SEO en 2025: Estrategias Clave para Destacar en un Entorno Digital en Constante Evolución",
+    excerpt: "Descubre las tendencias SEO más importantes para 2025, cómo la IA, E-E-A-T y la experiencia de usuario transforman el posicionamiento web en Colombia.",
+    date: "2024-06-10",
+    author: "Víctor Hugo",
+    category: "SEO",
+    image: "/images/blog/seo/Tendencias en Desarrollo Web para 2024-1.webp"
+  },
+  {
+    slug: "bases-datos-medida-2025",
+    title: "Más Allá del Almacenamiento: Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025",
+    excerpt: "Descubre por qué una base de datos a medida es la clave para la eficiencia, seguridad y crecimiento de tu empresa en 2025. Optimiza, integra y protege tus datos con soluciones personalizadas.",
+    date: "2024-06-11",
+    author: "Víctor Hugo",
+    category: "Bases de Datos",
+    image: "/images/blog/base de datos/Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025.png"
+  },
+  {
+    slug: "nextjs-2025-velocidad-seo-experiencia",
+    title: "Next.js en 2025: Velocidad, SEO y Experiencia de Usuario para tu Éxito Digital",
+    excerpt: "Descubre por qué Next.js es la mejor opción para el desarrollo web moderno en 2025: velocidad, SEO, experiencia de usuario y escalabilidad para tu negocio en Colombia.",
+    date: "2024-06-12",
     author: "Víctor Hugo",
     category: "Desarrollo Web",
-    image: "/images/blog/tendencias-web-2024.jpg"
+    image: "/images/blog/desarrollo/Velocidad SEO y Experiencia de Usuario para tu Éxito Digital.png"
   },
-  {
-    slug: "seo-para-pymes-colombia",
-    title: "SEO para PYMES en Colombia: Guía Práctica",
-    excerpt: "Estrategias y consejos para mejorar el posicionamiento web de pequeñas y medianas empresas en el mercado colombiano.",
-    date: "2024-04-20",
-    author: "Equipo Pantom",
-    category: "SEO",
-    image: "/images/blog/seo-pymes.jpg"
-  },
-  {
-    slug: "automatizacion-negocios-digitales",
-    title: "Automatización de Procesos en Negocios Digitales",
-    excerpt: "Cómo la automatización puede optimizar operaciones, ahorrar tiempo y potenciar el crecimiento de tu empresa.",
-    date: "2024-03-15",
-    author: "Víctor Hugo",
-    category: "Estrategia Digital",
-    image: "/images/blog/automatizacion-negocios.jpg"
-  },
-  // ...más artículos
 ];
 
 export default function Blog() {
@@ -105,44 +104,17 @@ export default function Blog() {
                   </Link>
                   <div className="p-6 flex-1 flex flex-col">
                     <span className="text-xs text-[#ea5a19] font-semibold mb-2 uppercase tracking-wide">{post.category}</span>
-                    <Link href={`/blog/${post.slug}`} className="hover:text-[#ea5a19]">
-                      <h2 className="text-xl font-bold text-white mb-2 line-clamp-2">{post.title}</h2>
+                    <Link href={`/blog/${post.slug}`} className="text-white font-semibold text-xl mt-2 hover:text-[#ea5a19]">
+                      {post.title}
                     </Link>
-                    <p className="text-gray-300 text-sm mb-4 line-clamp-3">{post.excerpt}</p>
-                    <div className="flex items-center justify-between mt-auto">
-                      <span className="text-xs text-gray-400">{post.date} • {post.author}</span>
-                      <Link href={`/blog/${post.slug}`} className="text-[#ea5a19] text-sm font-medium flex items-center gap-1 hover:underline">Leer Más <ArrowRight className="w-4 h-4" /></Link>
-                    </div>
+                    <p className="text-gray-300 mt-2">{post.excerpt}</p>
                   </div>
                 </article>
               ))
             )}
           </div>
-
-          {/* Paginación */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-12 gap-2">
-              <button
-                className="px-3 py-1 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium"
-                onClick={() => setPage(page - 1)}
-                disabled={page === 1}
-              >Anterior</button>
-              {Array.from({ length: totalPages }, (_, i) => (
-                <button
-                  key={i}
-                  className={`px-3 py-1 rounded-lg border border-white/10 text-white transition-colors text-sm font-medium ${page === i + 1 ? 'bg-[#ea5a19] text-white' : 'hover:bg-white/10'}`}
-                  onClick={() => setPage(i + 1)}
-                >{i + 1}</button>
-              ))}
-              <button
-                className="px-3 py-1 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium"
-                onClick={() => setPage(page + 1)}
-                disabled={page === totalPages}
-              >Siguiente</button>
-            </div>
-          )}
         </section>
       </main>
     </Layout>
   );
-} 
+}

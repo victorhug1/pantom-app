@@ -11,37 +11,26 @@ import { ArrowRight } from "lucide-react";
 // Datos de ejemplo - En producción, estos vendrían de tu CMS o API
 const blogPosts = [
   {
-    id: 1,
-    title: "Optimización de Bases de Datos: Mejores Prácticas",
-    excerpt: "Descubre las técnicas más efectivas para optimizar el rendimiento de tus bases de datos y mejorar la velocidad de tu aplicación.",
-    category: "Desarrollo",
-    image: "/blog/database-optimization.jpg",
-    slug: "/blog/optimizacion-bases-datos"
-  },
-  {
-    id: 2,
-    title: "SEO en 2024: Tendencias y Estrategias",
-    excerpt: "Las últimas actualizaciones de Google y las estrategias más efectivas para mejorar tu posicionamiento en buscadores.",
+    title: "SEO en 2025: Estrategias Clave para Destacar en un Entorno Digital en Constante Evolución",
+    excerpt: "Descubre las tendencias SEO más importantes para 2025, cómo la IA, E-E-A-T y la experiencia de usuario transforman el posicionamiento web en Colombia.",
     category: "SEO",
-    image: "/blog/seo-trends.jpg",
-    slug: "/blog/seo-2024"
+    image: "/images/blog/seo/Tendencias en Desarrollo Web para 2024-1.webp",
+    slug: "/blog/seo-2025-estrategias-clave"
   },
   {
-    id: 3,
-    title: "Transformación Digital: Guía Completa",
-    excerpt: "Todo lo que necesitas saber para llevar tu negocio al siguiente nivel con la transformación digital.",
-    category: "Marketing",
-    image: "/blog/digital-transformation.jpg",
-    slug: "/blog/transformacion-digital"
+    title: "Más Allá del Almacenamiento: Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025",
+    excerpt: "Descubre por qué una base de datos a medida es la clave para la eficiencia, seguridad y crecimiento de tu empresa en 2025. Optimiza, integra y protege tus datos con soluciones personalizadas.",
+    category: "Bases de Datos",
+    image: "/images/blog/base de datos/Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025.png",
+    slug: "/blog/bases-datos-medida-2025"
   },
   {
-    id: 4,
-    title: "Desarrollo Web: Frameworks Modernos",
-    excerpt: "Análisis comparativo de los frameworks más populares y cuándo usar cada uno en tus proyectos.",
-    category: "Desarrollo",
-    image: "/blog/web-frameworks.jpg",
-    slug: "/blog/frameworks-modernos"
-  }
+    title: "Next.js en 2025: Velocidad, SEO y Experiencia de Usuario para tu Éxito Digital",
+    excerpt: "Descubre por qué Next.js es la mejor opción para el desarrollo web moderno en 2025: velocidad, SEO, experiencia de usuario y escalabilidad para tu negocio en Colombia.",
+    category: "Desarrollo Web",
+    image: "/images/blog/desarrollo/Velocidad SEO y Experiencia de Usuario para tu Éxito Digital.png",
+    slug: "/blog/nextjs-2025-velocidad-seo-experiencia"
+  },
 ];
 
 const containerVariants = {
