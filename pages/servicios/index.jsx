@@ -16,6 +16,12 @@ export default function Servicios() {
         />
       </Head>
       <div className="relative min-h-screen pb-16 bg-[#0a0a0a] overflow-hidden">
+        {/* Fondo con destellos/acento naranja */}
+        <div aria-hidden="true" className="pointer-events-none select-none">
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-[radial-gradient(circle,rgba(234,90,25,0.25)_0%,transparent_70%)] blur-2xl z-0" />
+          <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[radial-gradient(circle,rgba(234,90,25,0.18)_0%,transparent_70%)] blur-2xl z-0" />
+          <div className="absolute top-1/2 left-0 w-40 h-40 bg-[radial-gradient(circle,rgba(234,90,25,0.10)_0%,transparent_80%)] blur-2xl z-0" />
+        </div>
         <ParticlesBackground />
         <main className="relative z-10">
           {/* Encabezado */}
