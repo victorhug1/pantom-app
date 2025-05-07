@@ -34,7 +34,7 @@ export default function Enfoque() {
           </p>
           <div className="flex justify-center mb-8">
             <Image
-              src="/images/enfoque-soluciones.jpg"
+              src="/images/services/enfoque.png"
               alt="Diagrama del enfoque de Pantom en soluciones digitales por desafío e industria"
               className="w-full max-w-2xl rounded-xl shadow-lg"
               width={1200}
