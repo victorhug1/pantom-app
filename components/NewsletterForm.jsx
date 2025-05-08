@@ -11,9 +11,14 @@ export default function NewsletterForm() {
     success: false,
     error: null
   });
+  const [consent, setConsent] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!consent) {
+      setStatus({ loading: false, success: false, error: 'Debes aceptar la política de privacidad.' });
+      return;
+    }
     setStatus({ loading: true, success: false, error: null });
 
     try {
@@ -94,6 +99,20 @@ export default function NewsletterForm() {
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="tu@email.com"
             />
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="consent"
+              checked={consent}
+              onChange={e => setConsent(e.target.checked)}
+              required
+              className="mr-2"
+            />
+            <label htmlFor="consent" className="text-sm text-gray-700 dark:text-gray-200">
+              He leído y acepto la <a href="/privacidad" target="_blank" className="text-[#ea5a19] underline">política de privacidad</a> y el uso de mis datos.
+            </label>
           </div>
 
           {status.error && (

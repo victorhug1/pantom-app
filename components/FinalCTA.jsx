@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Mail } from "lucide-react";
+import { useState } from "react";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -26,6 +27,8 @@ const itemVariants = {
 };
 
 export default function FinalCTA() {
+  const [consent, setConsent] = useState(false);
+
   return (
     <section className="relative py-24 overflow-hidden bg-[#0a0a0a]">
       {/* Fondo con gradiente y patrón de puntos */}
@@ -97,6 +100,12 @@ export default function FinalCTA() {
             <motion.form
               variants={itemVariants}
               className="space-y-4"
+              onSubmit={e => {
+                if (!consent) {
+                  e.preventDefault();
+                  alert('Debes aceptar la política de privacidad.');
+                }
+              }}
             >
               <div>
                 <input
@@ -105,6 +114,19 @@ export default function FinalCTA() {
                   className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-colors"
                   required
                 />
+              </div>
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="consent-newsletter"
+                  checked={consent}
+                  onChange={e => setConsent(e.target.checked)}
+                  required
+                  className="mr-2"
+                />
+                <label htmlFor="consent-newsletter" className="text-sm text-gray-300">
+                  He leído y acepto la <a href="/privacidad" target="_blank" className="text-[#ea5a19] underline">política de privacidad</a> y el uso de mis datos.
+                </label>
               </div>
               <button
                 type="submit"
