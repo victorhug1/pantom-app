@@ -1,10 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  i18n: {
-    locales: ['es', 'en'],
-    defaultLocale: 'es',
-  },
+  // i18n: {
+  //   locales: ['es', 'en'],
+  //   defaultLocale: 'es',
+  // },
   // Excluir páginas de la generación estática
   pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
   // Configuración para excluir páginas dinámicas de la generación estática
