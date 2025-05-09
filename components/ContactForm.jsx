@@ -45,7 +45,7 @@ export default function ContactForm() {
         message: '',
       });
     } catch (error) {
-      console.error('Contact form submission error:', error);
+      console.error('Error sending message:', error);
       setError(error.message);
     } finally {
       setLoading(false);
