@@ -4,11 +4,10 @@ export default function ContactForm() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    message: '',
+    message: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(false);
+  const [status, setStatus] = useState('idle');
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,11 +19,11 @@ export default function ContactForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setStatus('loading');
+    setError('');
 
     try {
-      const response = await fetch('/api/contact', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -32,23 +31,18 @@ export default function ContactForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Error al enviar el mensaje');
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error || 'Error al enviar mensaje');
       }
 
-      setSuccess(true);
-      setFormData({
-        name: '',
-        email: '',
-        message: '',
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-      setError(error.message);
-    } finally {
-      setLoading(false);
+      const data = await res.json();
+      setStatus('success');
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      console.error('Contact form error:', err);
+      setError(err.message);
+      setStatus('error');
     }
   };
 
@@ -87,9 +81,9 @@ export default function ContactForm() {
         />
       </div>
       {error && <p className="error">{error}</p>}
-      {success && <p className="success">Mensaje enviado con éxito</p>}
-      <button type="submit" disabled={loading}>
-        {loading ? 'Enviando...' : 'Enviar'}
+      {status === 'success' && <p className="success">Mensaje enviado con éxito</p>}
+      <button type="submit" disabled={status === 'loading'}>
+        {status === 'loading' ? 'Enviando...' : 'Enviar'}
       </button>
     </form>
   );

@@ -37,16 +37,16 @@ export default function NewsletterForm({ dark = false }) {
         }),
       });
 
-      const data = await response.json();
-      console.log('Respuesta del backend:', data);
-
       if (!response.ok) {
-        throw new Error(data.error || 'Error al suscribirse');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Error al suscribirse');
       }
 
+      const data = await response.json();
       setStatus({ loading: false, success: true, error: null });
       setFormData({ name: '', email: '' });
     } catch (error) {
+      console.error('Newsletter error:', error);
       setStatus({ loading: false, success: false, error: error.message });
     }
   };
