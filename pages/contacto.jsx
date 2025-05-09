@@ -5,11 +5,16 @@ import { Mail, Phone, MapPin, Calendar, Send } from "lucide-react";
 import { useState } from "react";
 
 export default function Contacto() {
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = useState({
+    loading: false,
+    success: false,
+    error: null
+  });
 
-  // Placeholder para el envío real
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setStatus({ loading: true, success: false, error: null });
+    
     const form = e.target;
     const data = {
       nombre: form.nombre.value,
@@ -19,19 +24,37 @@ export default function Contacto() {
       origen: 'contacto-web',
       etiquetas: [form.servicio.value]
     };
+
     try {
       const response = await fetch('/api/contacto', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify(data)
       });
-      if (!response.ok) throw new Error('Error al enviar el mensaje');
-      setStatus('success');
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.message || 'Error al enviar el mensaje');
+      }
+
+      setStatus({ loading: false, success: true, error: null });
       form.reset();
-      setTimeout(() => setStatus(null), 4000);
+      
+      // Mostrar mensaje de éxito por 4 segundos
+      setTimeout(() => {
+        setStatus(prev => ({ ...prev, success: false }));
+      }, 4000);
     } catch (err) {
-      setStatus('error');
-      setTimeout(() => setStatus(null), 4000);
+      console.error('Contact form error:', err);
+      setStatus({ 
+        loading: false, 
+        success: false, 
+        error: err.message || 'Error al enviar el mensaje' 
+      });
     }
   };
 
@@ -63,39 +86,84 @@ export default function Contacto() {
               <form className="space-y-4" onSubmit={handleSubmit} autoComplete="off">
                 <div>
                   <label htmlFor="nombre" className="block text-sm font-medium text-gray-300 mb-1">Nombre Completo *</label>
-                  <input type="text" id="nombre" name="nombre" required className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]" placeholder="Tu nombre" />
+                  <input 
+                    type="text" 
+                    id="nombre" 
+                    name="nombre" 
+                    required 
+                    className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]" 
+                    placeholder="Tu nombre" 
+                  />
                 </div>
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-1">Correo Electrónico *</label>
-                  <input type="email" id="email" name="email" required className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]" placeholder="tucorreo@email.com" />
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]" 
+                    placeholder="tucorreo@email.com" 
+                  />
                 </div>
                 <div>
                   <label htmlFor="telefono" className="block text-sm font-medium text-gray-300 mb-1">Teléfono</label>
-                  <input type="tel" id="telefono" name="telefono" className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]" placeholder="+57 300 000 0000" />
+                  <input 
+                    type="tel" 
+                    id="telefono" 
+                    name="telefono" 
+                    className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]" 
+                    placeholder="+57 300 000 0000" 
+                  />
                 </div>
                 <div>
                   <label htmlFor="servicio" className="block text-sm font-medium text-gray-300 mb-1">Asunto o Servicio de Interés *</label>
-                  <select id="servicio" name="servicio" required className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]">
+                  <select 
+                    id="servicio" 
+                    name="servicio" 
+                    required 
+                    className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19]"
+                  >
                     <option value="">Selecciona una opción</option>
-                    <option>Desarrollo Web</option>
-                    <option>Bases de Datos</option>
-                    <option>SEO</option>
-                    <option>Estrategia Digital</option>
-                    <option>Consulta General</option>
+                    <option value="Desarrollo Web">Desarrollo Web</option>
+                    <option value="Bases de Datos">Bases de Datos</option>
+                    <option value="SEO">SEO</option>
+                    <option value="Estrategia Digital">Estrategia Digital</option>
+                    <option value="Consulta General">Consulta General</option>
                   </select>
                 </div>
                 <div>
                   <label htmlFor="mensaje" className="block text-sm font-medium text-gray-300 mb-1">Mensaje *</label>
-                  <textarea id="mensaje" name="mensaje" required rows={5} className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19] resize-none" placeholder="Cuéntanos sobre tu proyecto o consulta..." />
+                  <textarea 
+                    id="mensaje" 
+                    name="mensaje" 
+                    required 
+                    rows={5} 
+                    className="w-full rounded-lg bg-[#0a0a0a] border border-white/10 text-white px-4 py-2 focus:outline-none focus:border-[#ea5a19] resize-none" 
+                    placeholder="Cuéntanos sobre tu proyecto o consulta..." 
+                  />
                 </div>
                 <div className="text-xs text-gray-400">
                   Al enviar, aceptas nuestra <Link href="/privacidad" className="underline hover:text-[#ea5a19]">Política de Privacidad</Link>.
                 </div>
-                {/* Aquí iría reCAPTCHA o similar */}
-                <button type="submit" className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#ea5a19] text-white font-semibold rounded-lg hover:bg-[#ff8f59] transition-colors text-lg mt-2">
-                  <Send className="w-5 h-5" /> Enviar Mensaje
+                {status.error && (
+                  <div className="text-red-400 text-sm mt-2">
+                    {status.error}
+                  </div>
+                )}
+                {status.success && (
+                  <div className="text-green-400 text-sm mt-2">
+                    ¡Mensaje enviado! Te responderemos pronto.
+                  </div>
+                )}
+                <button 
+                  type="submit" 
+                  disabled={status.loading}
+                  className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-[#ea5a19] text-white font-semibold rounded-lg hover:bg-[#ff8f59] transition-colors text-lg mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Send className="w-5 h-5" /> 
+                  {status.loading ? 'Enviando...' : 'Enviar Mensaje'}
                 </button>
-                {status === "success" && <div className="text-green-400 text-sm mt-2">¡Mensaje enviado! Te responderemos pronto.</div>}
               </form>
             </div>
             {/* Información directa */}
