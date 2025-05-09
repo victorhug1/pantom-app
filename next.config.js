@@ -1,6 +1,26 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: ['pantom.net'],
+  },
+  async headers() {
+    return [
+      {
+        source: '/site.webmanifest',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json',
+          },
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: '*',
+          },
+        ],
+      },
+    ];
+  },
   // i18n: {
   //   locales: ['es', 'en'],
   //   defaultLocale: 'es',
@@ -22,4 +42,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig; 
+module.exports = nextConfig;
