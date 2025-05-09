@@ -50,8 +50,7 @@ export default function Navbar() {
   const [showServices, setShowServices] = useState(false);
   const [showServicesMobile, setShowServicesMobile] = useState(false);
   const router = useRouter();
-  const { locale, asPath } = router;
-
+  
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
@@ -59,11 +58,6 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  const toggleLanguage = () => {
-    const nextLocale = locale === 'es' ? 'en' : 'es';
-    router.push(asPath, asPath, { locale: nextLocale });
-  };
 
   return (
     <motion.nav
@@ -137,13 +131,6 @@ export default function Navbar() {
                 </Link>
               )
             )}
-            <button
-              className="px-3 py-1 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium ml-2"
-              onClick={toggleLanguage}
-              aria-label="Cambiar idioma"
-            >
-              {locale === 'es' ? 'English' : 'Español'}
-            </button>
             <Link
               href="/contacto"
               className="px-4 py-2 text-white bg-primary hover:bg-primary/90 rounded-lg transition-colors"
@@ -216,15 +203,6 @@ export default function Navbar() {
                 </motion.div>
               )
             )}
-            <div className="mt-8">
-              <button
-                className="w-full px-4 py-2 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium"
-                onClick={toggleLanguage}
-                aria-label="Cambiar idioma"
-              >
-                {locale === 'es' ? 'English' : 'Español'}
-              </button>
-            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -292,15 +270,6 @@ export default function Navbar() {
                 )
               )}
             </ul>
-            <div className="mt-8">
-              <button
-                className="w-full px-4 py-2 rounded-lg border border-white/10 text-white hover:bg-white/10 transition-colors text-sm font-medium"
-                onClick={toggleLanguage}
-                aria-label="Cambiar idioma"
-              >
-                {locale === 'es' ? 'English' : 'Español'}
-              </button>
-            </div>
           </nav>
           <div className="p-6 border-t border-white/10">
             <Link

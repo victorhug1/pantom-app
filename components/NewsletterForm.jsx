@@ -23,7 +23,7 @@ export default function NewsletterForm({ dark = false }) {
     setStatus({ loading: true, success: false, error: null });
 
     try {
-      const response = await fetch('/api/newsletter', {
+      const response = await fetch('/api/subscribe', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +41,7 @@ export default function NewsletterForm({ dark = false }) {
       console.log('Respuesta del backend:', data);
 
       if (!response.ok) {
-        throw new Error(data.message || 'Error al suscribirse');
+        throw new Error(data.error || 'Error al suscribirse');
       }
 
       setStatus({ loading: false, success: true, error: null });
