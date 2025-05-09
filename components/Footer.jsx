@@ -8,7 +8,7 @@ export default function Footer() {
           </div>
           <div className="flex gap-6">
             <a href="mailto:hola@pantom.net" className="hover:text-primary transition">hola@pantom.net</a>
-            <a href="/contact" className="hover:text-primary transition">Contacto</a>
+            <a href="/contacto" className="hover:text-primary transition">Contacto</a>
           </div>
         </div>
       </footer>
