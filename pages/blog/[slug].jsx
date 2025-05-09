@@ -21,7 +21,7 @@ const mockPosts = [
     updated: "2024-06-10",
     category: "SEO",
     tags: ["SEO 2025", "E-E-A-T", "IA", "Tendencias"],
-    image: "/images/blog/seo/Tendencias en Desarrollo Web para 2024-1.webp",
+    image: "/images/blog/seo/tendencias-en-desarrollo web-para.webp",
     excerpt: "Descubre las tendencias SEO más importantes para 2025, cómo la IA, E-E-A-T y la experiencia de usuario transforman el posicionamiento web en Colombia.",
     content: `
       <h2>La Experiencia del Usuario (UX) Sigue Reinando (¡y con más fuerza!)</h2>
@@ -75,7 +75,7 @@ const mockPosts = [
     updated: "2024-06-11",
     category: "Bases de Datos",
     tags: ["bases de datos a medida 2025", "soluciones de datos Colombia", "optimización de bases de datos", "seguridad de datos empresas", "diseño de bases de datos", "consultoría bases de datos Boyacá"],
-    image: "/images/blog/base-de-datos-2025.png",
+    image: "/images/blog/base-de-datos/base-de-datos-2025.webp",
     excerpt: "Descubre por qué una base de datos a medida es la clave para la eficiencia, seguridad y crecimiento de tu empresa en 2025. Optimiza, integra y protege tus datos con soluciones personalizadas.",
     content: `<h2>Más Allá del Almacenamiento...</h2><p>En pleno 2025, es innegable: los datos son el motor que impulsa a las empresas más exitosas. ...</p>`,
     readingTime: "7 min",
@@ -93,7 +93,7 @@ const mockPosts = [
     updated: "2024-06-12",
     category: "Desarrollo Web",
     tags: ["Next.js 2025", "desarrollo web", "SEO", "React", "Colombia", "Boyacá"],
-    image: "/images/blog/velocidad-seo-experiencia-usuario.png",
+    image: "/images/blog/desarrollo/velocidad-seo-experiencia-usuario.webp",
     excerpt: "Descubre por qué Next.js es la mejor opción para el desarrollo web moderno en 2025: velocidad, SEO, experiencia de usuario y escalabilidad para tu negocio en Colombia.",
     content: `
       <h2>¿Qué es Next.js y Por Qué Debería Importarte?</h2>

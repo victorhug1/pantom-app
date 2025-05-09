@@ -1,0 +1,21 @@
+{
+  "name": "Pantom Digital Studio",
+  "short_name": "Pantom",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#ea5a19",
+  "description": "Estudio digital especializado en desarrollo web, bases de datos y SEO en Colombia.",
+  "icons": [
+    {
+      "src": "/pantom_logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/pantom_logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+} 

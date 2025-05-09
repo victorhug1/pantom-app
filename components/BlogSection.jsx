@@ -14,21 +14,21 @@ const blogPosts = [
     title: "SEO en 2025: Estrategias Clave para Destacar en un Entorno Digital en Constante Evolución",
     excerpt: "Descubre las tendencias SEO más importantes para 2025, cómo la IA, E-E-A-T y la experiencia de usuario transforman el posicionamiento web en Colombia.",
     category: "SEO",
-    image: "/images/blog/seo/Tendencias en Desarrollo Web para 2024-1.webp",
+    image: "/images/blog/seo/tendencias-en-desarrollo web-para.webp",
     slug: "/blog/seo-2025-estrategias-clave"
   },
   {
     title: "Más Allá del Almacenamiento: Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025",
     excerpt: "Descubre por qué una base de datos a medida es la clave para la eficiencia, seguridad y crecimiento de tu empresa en 2025. Optimiza, integra y protege tus datos con soluciones personalizadas.",
     category: "Bases de Datos",
-    image: "/images/blog/base de datos/Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025.png",
+    image: "/images/blog/base-de-datos/base-de-datos-2025.webp",
     slug: "/blog/bases-datos-medida-2025"
   },
   {
     title: "Next.js en 2025: Velocidad, SEO y Experiencia de Usuario para tu Éxito Digital",
     excerpt: "Descubre por qué Next.js es la mejor opción para el desarrollo web moderno en 2025: velocidad, SEO, experiencia de usuario y escalabilidad para tu negocio en Colombia.",
     category: "Desarrollo Web",
-    image: "/images/blog/desarrollo/Velocidad SEO y Experiencia de Usuario para tu Éxito Digital.png",
+    image: "/images/blog/desarrollo/velocidad-seo-experiencia-usuario.webp",
     slug: "/blog/nextjs-2025-velocidad-seo-experiencia"
   },
 ];

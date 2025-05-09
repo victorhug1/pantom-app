@@ -70,7 +70,7 @@ export default function Hero() {
       <div className="container relative z-10 mx-auto px-4 py-16 sm:px-6 lg:px-8 flex flex-col min-h-screen justify-center">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Columna izquierda: texto y CTA */}
-          <motion.div
+        <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
@@ -92,18 +92,18 @@ export default function Hero() {
               variants={itemVariants}
               className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
             >
-              <Link
+            <Link
                 href="/contacto"
                 className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-base font-medium text-primary-foreground shadow-sm hover:bg-primary-hover focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-              >
+            >
                 Agendar consulta estratégica
-              </Link>
-              <Link
+            </Link>
+            <Link
                 href="/servicios"
                 className="inline-flex items-center justify-center rounded-md border border-input bg-background px-6 py-3 text-base font-medium text-foreground shadow-sm hover:bg-accent hover:text-accent-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors"
-              >
+            >
                 Ver nuestros servicios
-              </Link>
+            </Link>
             </motion.div>
           </motion.div>
           {/* Columna derecha: GIF */}
