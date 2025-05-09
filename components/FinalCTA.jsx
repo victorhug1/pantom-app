@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, Mail } from "lucide-react";
 import { useState } from "react";
+import NewsletterForm from './NewsletterForm';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -83,61 +84,7 @@ export default function FinalCTA() {
             >
               <Mail className="w-6 h-6" />
             </motion.div>
-            <motion.h3
-              variants={itemVariants}
-              className="text-2xl font-bold text-white mb-4"
-            >
-              Mantente Informado
-            </motion.h3>
-            <motion.p
-              variants={itemVariants}
-              className="text-gray-300 mb-6"
-            >
-              Suscríbete a nuestra newsletter para recibir las últimas actualizaciones, 
-              consejos y tendencias en desarrollo web y tecnología.
-            </motion.p>
-
-            <motion.form
-              variants={itemVariants}
-              className="space-y-4"
-              onSubmit={e => {
-                if (!consent) {
-                  e.preventDefault();
-                  alert('Debes aceptar la política de privacidad.');
-                }
-              }}
-            >
-              <div>
-                <input
-                  type="email"
-                  placeholder="Tu correo electrónico"
-                  className="w-full px-4 py-3 rounded-lg bg-white/5 border border-white/10 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent transition-colors"
-                  required
-                />
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="consent-newsletter"
-                  checked={consent}
-                  onChange={e => setConsent(e.target.checked)}
-                  required
-                  className="mr-2"
-                />
-                <label htmlFor="consent-newsletter" className="text-sm text-gray-300">
-                  He leído y acepto la <a href="/privacidad" target="_blank" className="text-[#ea5a19] underline">política de privacidad</a> y el uso de mis datos.
-                </label>
-              </div>
-              <button
-                type="submit"
-                className="w-full px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-[#1a1a1a] transition-colors"
-              >
-                Suscribirse
-              </button>
-              <p className="text-sm text-gray-400 text-center">
-                Respetamos tu privacidad. Puedes darte de baja en cualquier momento.
-              </p>
-            </motion.form>
+            <NewsletterForm dark />
           </motion.div>
         </div>
       </div>

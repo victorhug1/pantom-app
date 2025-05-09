@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import SEO from '@/components/SEO';
 import { useRouter } from 'next/router';
 import dynamic from "next/dynamic";
+import NewsletterForm from '../components/NewsletterForm';
 
 const ParticlesBackgroundServicios = dynamic(
   () => import("@/components/ParticlesBackgroundServicios"),

@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-export default function NewsletterForm() {
+export default function NewsletterForm({ dark = false }) {
   const [formData, setFormData] = useState({
     name: '',
     email: ''
@@ -12,6 +12,7 @@ export default function NewsletterForm() {
     error: null
   });
   const [consent, setConsent] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,10 +28,17 @@ export default function NewsletterForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          source: 'newsletter-form',
+          tags: [],
+          lang: 'es'
+        }),
       });
 
       const data = await response.json();
+      console.log('Respuesta del backend:', data);
 
       if (!response.ok) {
         throw new Error(data.message || 'Error al suscribirse');
@@ -50,12 +58,21 @@ export default function NewsletterForm() {
     }));
   };
 
+  useEffect(() => {
+    if (status.success) {
+      console.log('Mostrando popup de agradecimiento');
+      setShowModal(true);
+      const timer = setTimeout(() => setShowModal(false), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [status.success]);
+
   return (
-    <div className="bg-white rounded-lg shadow-lg p-6 max-w-md mx-auto">
-      <h3 className="text-2xl font-bold text-gray-900 mb-4">
+    <div className={`${dark ? 'bg-[#1a1a1a]/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm text-white' : 'bg-white text-gray-900'} rounded-lg shadow-lg p-6 max-w-md mx-auto`}>
+      <h3 className={`text-2xl font-bold mb-4 ${dark ? 'text-white' : 'text-gray-900'}`}>
         Suscríbete a nuestra Newsletter
       </h3>
-      <p className="text-gray-600 mb-6">
+      <p className={`mb-6 ${dark ? 'text-gray-300' : 'text-gray-600'}`}>
         Recibe las últimas actualizaciones sobre desarrollo web, SEO y tecnología.
       </p>
 
@@ -80,7 +97,7 @@ export default function NewsletterForm() {
               value={formData.name}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${dark ? 'bg-white/5 border-white/10 text-white placeholder-gray-400' : 'border-gray-300'}`}
               placeholder="Tu nombre"
             />
           </div>
@@ -96,7 +113,7 @@ export default function NewsletterForm() {
               value={formData.email}
               onChange={handleChange}
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className={`w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${dark ? 'bg-white/5 border-white/10 text-white placeholder-gray-400' : 'border-gray-300'}`}
               placeholder="tu@email.com"
             />
           </div>
@@ -110,7 +127,7 @@ export default function NewsletterForm() {
               required
               className="mr-2"
             />
-            <label htmlFor="consent" className="text-sm text-gray-700 dark:text-gray-200">
+            <label htmlFor="consent" className={`text-sm ${dark ? 'text-gray-300' : 'text-gray-700 dark:text-gray-200'}`}>
               He leído y acepto la <a href="/privacidad" target="_blank" className="text-[#ea5a19] underline">política de privacidad</a> y el uso de mis datos.
             </label>
           </div>
@@ -128,14 +145,27 @@ export default function NewsletterForm() {
           <button
             type="submit"
             disabled={status.loading}
-            className={`w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors ${
-              status.loading ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`w-full py-2 px-4 rounded-md transition-colors font-medium ${dark ? 'bg-primary text-white hover:bg-primary/90' : 'bg-blue-600 text-white hover:bg-blue-700'} ${status.loading ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
-            {status.loading ? 'Enviando...' : 'Suscribirse'}
+            Suscribirse
           </button>
         </form>
       )}
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className={`${dark ? 'bg-[#1a1a1a] text-white' : 'bg-white'} rounded-xl shadow-xl p-8 max-w-sm w-full text-center`}>
+            <h4 className="text-2xl font-bold mb-2" style={{ color: '#ea5a19' }}>¡Gracias por suscribirte!</h4>
+            <p className={`${dark ? 'text-gray-300' : 'text-gray-700'} mb-4`}>Te mantendremos informado con las mejores novedades y recursos digitales.</p>
+            <button
+              onClick={() => setShowModal(false)}
+              className="mt-2 px-6 py-2 bg-[#ea5a19] text-white rounded-lg hover:bg-[#ff8f59] transition-colors"
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-} 
+}

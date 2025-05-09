@@ -14,7 +14,7 @@ const mockPosts = [
     date: "2024-06-10",
     author: "Víctor Hugo",
     category: "SEO",
-    image: "/images/blog/seo/Tendencias en Desarrollo Web para 2024-1.webp"
+    image: "/images/blog/tendencias-desarrollo-web-2024-1.webp"
   },
   {
     slug: "bases-datos-medida-2025",
@@ -23,7 +23,7 @@ const mockPosts = [
     date: "2024-06-11",
     author: "Víctor Hugo",
     category: "Bases de Datos",
-    image: "/images/blog/base de datos/Por Qué una Base de Datos a Medida es Clave para tu Negocio en 2025.png"
+    image: "/images/blog/base-de-datos-2025.png"
   },
   {
     slug: "nextjs-2025-velocidad-seo-experiencia",
@@ -32,7 +32,7 @@ const mockPosts = [
     date: "2024-06-12",
     author: "Víctor Hugo",
     category: "Desarrollo Web",
-    image: "/images/blog/desarrollo/Velocidad SEO y Experiencia de Usuario para tu Éxito Digital.png"
+    image: "/images/blog/velocidad-seo-experiencia-usuario.png"
   },
 ];
 

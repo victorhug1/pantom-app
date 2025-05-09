@@ -8,10 +8,31 @@ export default function Contacto() {
   const [status, setStatus] = useState(null);
 
   // Placeholder para el envío real
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setStatus("success");
-    setTimeout(() => setStatus(null), 4000);
+    const form = e.target;
+    const data = {
+      nombre: form.nombre.value,
+      email: form.email.value,
+      telefono: form.telefono.value,
+      mensaje: form.mensaje.value,
+      origen: 'contacto-web',
+      etiquetas: [form.servicio.value]
+    };
+    try {
+      const response = await fetch('/api/contacto', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!response.ok) throw new Error('Error al enviar el mensaje');
+      setStatus('success');
+      form.reset();
+      setTimeout(() => setStatus(null), 4000);
+    } catch (err) {
+      setStatus('error');
+      setTimeout(() => setStatus(null), 4000);
+    }
   };
 
   return (
