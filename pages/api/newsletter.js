@@ -1,4 +1,5 @@
 import clientPromise from '../../lib/mongodb';
+import { sendWelcomeEmail } from '../../lib/mailer';
 
 export default async function handler(req, res) {
   console.log('Newsletter API called:', req.method);
@@ -66,6 +67,14 @@ export default async function handler(req, res) {
     console.log('Insertando nuevo suscriptor...');
     await collection.insertOne(doc);
     console.log('Suscriptor insertado exitosamente');
+
+    // Enviar email de bienvenida
+    try {
+      await sendWelcomeEmail({ to: email, name });
+      console.log('Email de bienvenida enviado');
+    } catch (err) {
+      console.error('Error enviando email de bienvenida:', err);
+    }
 
     return res.status(200).json({ 
       success: true, 
