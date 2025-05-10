@@ -1,4 +1,4 @@
-import clientPromise from '../../lib/mongodb';
+import { handleContactForm } from '../../lib/leadService';
 
 export default async function handler(req, res) {
   console.log('Contacto API called:', req.method);
@@ -42,38 +42,27 @@ export default async function handler(req, res) {
       });
     }
 
-    // Conexión a MongoDB
-    console.log('Conectando a MongoDB...');
-    const client = await clientPromise;
-    console.log('Conexión a MongoDB exitosa');
-    
-    const db = client.db('pantom-app');
-    const collection = db.collection('contacto');
-
-    // Crear documento
-    const doc = {
+    // Procesar el formulario de contacto usando el nuevo servicio
+    const lead = await handleContactForm({
       nombre,
       email,
-      mensaje,
       telefono,
-      fecha: new Date(),
-      leido: false,
-      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
-      origen,
-      userAgent: req.headers['user-agent'] || '',
-      etiquetas,
-      resuelto: false
-    };
+      mensaje,
+      etiquetas: [...etiquetas, 'contacto_web'],
+      metadata: {
+        ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
+        userAgent: req.headers['user-agent'] || '',
+        origen,
+        mensaje
+      }
+    });
 
-    // Insertar en la base de datos
-    console.log('Insertando mensaje de contacto...');
-    await collection.insertOne(doc);
-    console.log('Mensaje insertado exitosamente');
+    console.log('Formulario de contacto procesado exitosamente:', lead._id);
 
     return res.status(200).json({ 
       success: true, 
       message: 'Mensaje guardado correctamente',
-      data: doc 
+      data: { leadId: lead._id }
     });
 
   } catch (error) {

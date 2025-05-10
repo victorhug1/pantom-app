@@ -1,5 +1,4 @@
-import clientPromise from '../../lib/mongodb';
-import { sendWelcomeEmail } from '../../lib/mailer';
+import { handleNewsletterSubscription } from '../../lib/leadService';
 
 export default async function handler(req, res) {
   console.log('Newsletter API called:', req.method);
@@ -34,47 +33,18 @@ export default async function handler(req, res) {
       });
     }
 
-    console.log('Conectando a MongoDB...');
-    const client = await clientPromise;
-    console.log('Conexión a MongoDB exitosa');
-    
-    const db = client.db('pantom-app');
-    const collection = db.collection('newsletter');
-
-    // Verificar si el email ya existe
-    console.log('Verificando email existente...');
-    const existingSubscriber = await collection.findOne({ email });
-    if (existingSubscriber) {
-      console.log('Email ya existe en la base de datos');
-      return res.status(400).json({
-        success: false,
-        message: 'Este email ya está suscrito'
-      });
-    }
-
-    // Crear documento
-    const doc = {
+    // Procesar la suscripción usando el nuevo servicio
+    const lead = await handleNewsletterSubscription({
+      nombre: name,
       email,
-      name,
-      createdAt: new Date(),
-      status: 'active',
-      source: 'web',
-      ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
-      userAgent: req.headers['user-agent'] || ''
-    };
+      metadata: {
+        ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || '',
+        userAgent: req.headers['user-agent'] || '',
+        origen: 'web'
+      }
+    });
 
-    // Insertar en la base de datos
-    console.log('Insertando nuevo suscriptor...');
-    await collection.insertOne(doc);
-    console.log('Suscriptor insertado exitosamente');
-
-    // Enviar email de bienvenida
-    try {
-      await sendWelcomeEmail({ to: email, name });
-      console.log('Email de bienvenida enviado');
-    } catch (err) {
-      console.error('Error enviando email de bienvenida:', err);
-    }
+    console.log('Suscripción procesada exitosamente:', lead._id);
 
     return res.status(200).json({ 
       success: true, 
