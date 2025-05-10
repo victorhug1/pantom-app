@@ -1,7 +1,9 @@
 import { handleContactForm } from '../../lib/leadService';
+import { logger } from '../../lib/logger';
 
 export default async function handler(req, res) {
-  console.log('Contacto API called:', req.method);
+  // Asegurar que la respuesta siempre es JSON
+  res.setHeader('Content-Type', 'application/json');
 
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -12,11 +14,11 @@ export default async function handler(req, res) {
 
   try {
     const { nombre, email, mensaje, telefono = '', origen = '', etiquetas = [] } = req.body;
-    console.log('Datos recibidos:', { nombre, email, telefono, origen, etiquetas });
+    logger.info('Datos recibidos en contacto:', { nombre, email, telefono, origen, etiquetas });
 
     // Validación de campos requeridos
     if (!nombre || !email || !mensaje) {
-      console.log('Validación fallida: campos requeridos faltantes');
+      logger.warn('Validación fallida: campos requeridos faltantes');
       return res.status(400).json({ 
         success: false,
         message: 'Nombre, email y mensaje son obligatorios' 
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
     // Validación básica de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log('Validación fallida: formato de email inválido');
+      logger.warn('Validación fallida: formato de email inválido');
       return res.status(400).json({
         success: false,
         message: 'El formato del email no es válido'
@@ -35,7 +37,7 @@ export default async function handler(req, res) {
 
     // Validación de longitud del mensaje
     if (mensaje.length < 10) {
-      console.log('Validación fallida: mensaje demasiado corto');
+      logger.warn('Validación fallida: mensaje demasiado corto');
       return res.status(400).json({
         success: false,
         message: 'El mensaje debe tener al menos 10 caracteres'
@@ -57,7 +59,7 @@ export default async function handler(req, res) {
       }
     });
 
-    console.log('Formulario de contacto procesado exitosamente:', lead._id);
+    logger.info('Formulario de contacto procesado exitosamente:', { leadId: lead._id });
 
     return res.status(200).json({ 
       success: true, 
@@ -66,7 +68,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Contact API error:', error);
+    logger.error('Error en contacto API:', error);
     return res.status(500).json({ 
       success: false, 
       message: 'Error interno del servidor',

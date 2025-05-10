@@ -1,7 +1,9 @@
 import { handleNewsletterSubscription } from '../../lib/leadService';
+import { logger } from '../../lib/logger';
 
 export default async function handler(req, res) {
-  console.log('Newsletter API called:', req.method);
+  // Asegurar que la respuesta siempre es JSON
+  res.setHeader('Content-Type', 'application/json');
 
   if (req.method !== 'POST') {
     return res.status(405).json({ 
@@ -12,11 +14,11 @@ export default async function handler(req, res) {
 
   try {
     const { name, email } = req.body;
-    console.log('Datos recibidos:', { name, email });
+    logger.info('Datos recibidos en newsletter:', { name, email });
 
     // Validación básica
     if (!email || !name) {
-      console.log('Validación fallida: campos requeridos faltantes');
+      logger.warn('Validación fallida: campos requeridos faltantes');
       return res.status(400).json({ 
         success: false,
         message: 'Nombre y email son requeridos' 
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
     // Validación de formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      console.log('Validación fallida: formato de email inválido');
+      logger.warn('Validación fallida: formato de email inválido');
       return res.status(400).json({
         success: false,
         message: 'El formato del email no es válido'
@@ -44,7 +46,7 @@ export default async function handler(req, res) {
       }
     });
 
-    console.log('Suscripción procesada exitosamente:', lead._id);
+    logger.info('Suscripción procesada exitosamente:', { leadId: lead._id });
 
     return res.status(200).json({ 
       success: true, 
@@ -52,7 +54,7 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    console.error('Newsletter API error:', error);
+    logger.error('Error en newsletter API:', error);
     return res.status(500).json({ 
       success: false, 
       message: 'Error al procesar la suscripción',
