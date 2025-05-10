@@ -1,6 +1,13 @@
 import { handleNewsletterSubscription } from '../../lib/leadService';
 import { logger } from '../../lib/logger';
 
+export const config = {
+  api: {
+    bodyParser: true,
+    externalResolver: true,
+  },
+};
+
 export default async function handler(req, res) {
   // Asegurar que la respuesta siempre es JSON
   res.setHeader('Content-Type', 'application/json');
@@ -36,6 +43,7 @@ export default async function handler(req, res) {
     }
 
     // Procesar la suscripción usando el nuevo servicio
+    logger.info('Iniciando procesamiento de suscripción...');
     const lead = await handleNewsletterSubscription({
       nombre: name,
       email,
@@ -55,10 +63,12 @@ export default async function handler(req, res) {
 
   } catch (error) {
     logger.error('Error en newsletter API:', error);
+    // Asegurar que el error es serializable
+    const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
     return res.status(500).json({ 
       success: false, 
       message: 'Error al procesar la suscripción',
-      error: error.message
+      error: errorMessage
     });
   }
 } 
