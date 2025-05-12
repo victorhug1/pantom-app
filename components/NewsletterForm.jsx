@@ -86,7 +86,7 @@ export default function NewsletterForm({ dark = false }) {
         Suscríbete a nuestra Newsletter
       </h3>
       <p className={`mb-6 ${dark ? 'text-gray-300' : 'text-gray-600'}`}>
-        Recibe las últimas actualizaciones sobre desarrollo web, SEO y tecnología.
+        Recibe las últimas noticias y actualizaciones sobre desarrollo web, SEO y tecnología.
       </p>
 
       <form onSubmit={handleSubmit} className="space-y-4">
