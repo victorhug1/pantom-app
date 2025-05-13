@@ -6,40 +6,85 @@ export default async function handler(req, res) {
   const collection = db.collection('leads');
 
   if (req.method === 'POST') {
-    // Crear un nuevo lead
     try {
-      const { nombre, email, segmento, fechaRegistro = new Date().toISOString() } = req.body;
+      // Verificar si es una inserción individual o en bloque
+      const leads = Array.isArray(req.body) ? req.body : [req.body];
+      
+      // Validar y preparar los leads
+      const leadsToInsert = [];
+      const existingEmails = new Set();
+      const errors = [];
 
-      // Validación básica
-      if (!nombre || !email || !segmento) {
-        return res.status(400).json({ success: false, message: 'Faltan campos requeridos' });
+      for (const lead of leads) {
+        const { nombre, email, segmento, fechaRegistro = new Date().toISOString() } = lead;
+
+        // Validación básica
+        if (!nombre || !email || !segmento) {
+          errors.push({ email, error: 'Faltan campos requeridos' });
+          continue;
+        }
+
+        // Validación de email
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          errors.push({ email, error: 'Email inválido' });
+          continue;
+        }
+
+        // Verificar duplicados en el lote actual
+        if (existingEmails.has(email)) {
+          errors.push({ email, error: 'Email duplicado en el lote' });
+          continue;
+        }
+        existingEmails.add(email);
+
+        leadsToInsert.push({
+          nombre,
+          email,
+          segmento,
+          fechaRegistro: new Date(fechaRegistro),
+          createdAt: new Date(),
+          updatedAt: new Date()
+        });
       }
 
-      // Validación de email simple
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        return res.status(400).json({ success: false, message: 'Email inválido' });
+      if (leadsToInsert.length === 0) {
+        return res.status(400).json({ 
+          success: false, 
+          message: 'No hay leads válidos para insertar',
+          errors 
+        });
       }
 
-      // Verificar si ya existe el lead
-      const existing = await collection.findOne({ email });
-      if (existing) {
-        return res.status(409).json({ success: false, message: 'El email ya está registrado' });
+      // Verificar duplicados en la base de datos
+      const existingLeads = await collection.find({ 
+        email: { $in: leadsToInsert.map(lead => lead.email) } 
+      }).toArray();
+
+      const existingEmailsInDB = new Set(existingLeads.map(lead => lead.email));
+      const finalLeadsToInsert = leadsToInsert.filter(lead => !existingEmailsInDB.has(lead.email));
+
+      // Insertar los leads que no existen
+      if (finalLeadsToInsert.length > 0) {
+        const result = await collection.insertMany(finalLeadsToInsert);
+        
+        return res.status(201).json({
+          success: true,
+          message: 'Leads procesados',
+          inserted: result.insertedCount,
+          duplicates: existingLeads.length,
+          errors: errors.length > 0 ? errors : undefined
+        });
+      } else {
+        return res.status(409).json({
+          success: false,
+          message: 'Todos los leads ya existen en la base de datos',
+          duplicates: existingLeads.length,
+          errors: errors.length > 0 ? errors : undefined
+        });
       }
 
-      const lead = {
-        nombre,
-        email,
-        segmento,
-        fechaRegistro: new Date(fechaRegistro),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-
-      await collection.insertOne(lead);
-
-      return res.status(201).json({ success: true, message: 'Lead creado', lead });
     } catch (error) {
-      console.error('Error creando lead:', error);
+      console.error('Error procesando leads:', error);
       return res.status(500).json({ success: false, message: 'Error interno', error: error.message });
     }
   }
