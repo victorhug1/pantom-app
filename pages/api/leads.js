@@ -16,7 +16,22 @@ export default async function handler(req, res) {
       const errors = [];
 
       for (const lead of leads) {
-        const { nombre, email, segmento, fechaRegistro = new Date().toISOString() } = lead;
+        const { 
+          nombre, 
+          email, 
+          segmento, 
+          telefono,
+          empresa,
+          cargo,
+          pais,
+          ciudad,
+          fuente,
+          notas,
+          tags = [],
+          estado = 'nuevo',
+          ultimaInteraccion = new Date(),
+          fechaRegistro = new Date().toISOString() 
+        } = lead;
 
         // Validación básica
         if (!nombre || !email || !segmento) {
@@ -41,6 +56,16 @@ export default async function handler(req, res) {
           nombre,
           email,
           segmento,
+          telefono,
+          empresa,
+          cargo,
+          pais,
+          ciudad,
+          fuente,
+          notas,
+          tags,
+          estado,
+          ultimaInteraccion: new Date(ultimaInteraccion),
           fechaRegistro: new Date(fechaRegistro),
           createdAt: new Date(),
           updatedAt: new Date()
@@ -92,18 +117,48 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     // Consultar leads con filtros
     try {
-      const { email, segmento, limit = 20 } = req.query;
+      const { 
+        email, 
+        segmento, 
+        estado,
+        pais,
+        ciudad,
+        fuente,
+        tags,
+        limit = 20, 
+        page = 1 
+      } = req.query;
+      
       const query = {};
       if (email) query.email = email;
       if (segmento) query.segmento = segmento;
+      if (estado) query.estado = estado;
+      if (pais) query.pais = pais;
+      if (ciudad) query.ciudad = ciudad;
+      if (fuente) query.fuente = fuente;
+      if (tags) query.tags = { $in: tags.split(',') };
 
+      // Calcular el total de leads
+      const total = await collection.countDocuments(query);
+
+      // Obtener los leads con paginación
       const leads = await collection
         .find(query)
-        .sort({ fechaRegistro: -1 })
+        .sort({ createdAt: -1 })
+        .skip((page - 1) * limit)
         .limit(Number(limit))
         .toArray();
 
-      return res.status(200).json({ success: true, leads });
+      return res.status(200).json({ 
+        success: true, 
+        leads,
+        pagination: {
+          total,
+          page: Number(page),
+          limit: Number(limit),
+          pages: Math.ceil(total / limit)
+        }
+      });
     } catch (error) {
       console.error('Error consultando leads:', error);
       return res.status(500).json({ success: false, message: 'Error interno', error: error.message });

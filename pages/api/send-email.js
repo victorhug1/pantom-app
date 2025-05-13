@@ -16,149 +16,130 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, message: 'Método no permitido' });
   }
 
-  // Validar API key
-  if (!MAILERSEND_API_KEY) {
-    return res.status(500).json({ 
-      success: false, 
-      message: 'Error de configuración: API key no configurada' 
-    });
-  }
+  const client = await clientPromise;
+  const db = client.db('pantom-app');
+  const leadsCollection = db.collection('leads');
+  const notificationsCollection = db.collection('notifications');
 
   try {
-    const { leads, templateId = MAILERSEND_TEMPLATE_ID } = req.body;
+    const { leadId, campaignId } = req.body;
 
-    if (!leads || !Array.isArray(leads) || leads.length === 0) {
-      return res.status(400).json({ success: false, message: 'Se requiere al menos un lead' });
+    // Obtener el lead
+    const lead = await leadsCollection.findOne({ _id: leadId });
+    if (!lead) {
+      return res.status(404).json({ success: false, message: 'Lead no encontrado' });
     }
 
-    // Validar límite de envíos por lote
-    if (leads.length > 100) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'El límite máximo de envíos por lote es 100' 
-      });
+    // Obtener la campaña si existe
+    let campaign = null;
+    if (campaignId) {
+      campaign = await db.collection('campaigns').findOne({ _id: campaignId });
     }
 
-    // Conectar a MongoDB para verificar los leads
-    const client = await clientPromise;
-    const db = client.db('pantom-app');
-    const collection = db.collection('leads');
-
-    // Verificar que los leads existan en la base de datos
-    const emails = leads.map(lead => lead.email);
-    const existingLeads = await collection.find({ email: { $in: emails } }).toArray();
-    
-    if (existingLeads.length === 0) {
-      return res.status(404).json({ success: false, message: 'No se encontraron leads en la base de datos' });
-    }
-
-    // Preparar los emails para enviar
-    const emailPromises = existingLeads.map(async (lead) => {
-      try {
-        const response = await fetch('https://api.mailersend.com/v1/email', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${MAILERSEND_API_KEY}`
-          },
-          body: JSON.stringify({
-            template_id: templateId,
-            from: {
-              email: MAILERSEND_FROM_EMAIL,
-              name: MAILERSEND_FROM_NAME
-            },
-            to: [
-              {
-                email: lead.email,
-                name: lead.nombre
-              }
-            ],
-            subject: `Bienvenido a Pantom, ${lead.nombre}!`,
-            variables: [
-              {
-                email: lead.email,
-                substitutions: [
-                  {
-                    var: 'nombre',
-                    value: lead.nombre
-                  },
-                  {
-                    var: 'segmento',
-                    value: lead.segmento
-                  }
-                ]
-              }
-            ]
-          })
-        });
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(`Error al enviar email a ${lead.email}: ${error.message}`);
+    // Preparar el email
+    const emailData = {
+      sender: {
+        name: "Pantom",
+        email: "noreply@pantom.com"
+      },
+      to: [
+        {
+          name: lead.nombre,
+          email: lead.email
         }
+      ],
+      subject: campaign ? campaign.asunto : "Bienvenido a Pantom",
+      html: campaign ? campaign.contenido : `
+        <h1>Bienvenido a Pantom</h1>
+        <p>Hola ${lead.nombre},</p>
+        <p>Gracias por registrarte en nuestra plataforma.</p>
+      `,
+      text: "Bienvenido a Pantom",
+      tags: ["welcome", "onboarding"]
+    };
 
-        return {
-          email: lead.email,
-          status: 'success'
-        };
-      } catch (error) {
-        console.error(`Error específico para ${lead.email}:`, error);
-        throw error;
-      }
+    // Enviar el email usando MailerSend
+    const response = await fetch('https://api.mailersend.com/v1/email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.MAILERSEND_API_KEY}`
+      },
+      body: JSON.stringify(emailData)
     });
 
-    // Ejecutar todos los envíos
-    const results = await Promise.allSettled(emailPromises);
-    
-    // Procesar resultados
-    const successful = results.filter(r => r.status === 'fulfilled').map(r => r.value);
-    const failed = results.filter(r => r.status === 'rejected').map(r => r.reason);
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`Error al enviar email a ${lead.email}: ${error.message}`);
+    }
 
-    // Actualizar el estado de envío en la base de datos
-    if (successful.length > 0) {
-      await collection.updateMany(
-        { email: { $in: successful.map(r => r.email) } },
+    // Registrar la notificación
+    await notificationsCollection.insertOne({
+      type: 'email_sent',
+      leadId: lead._id,
+      email: lead.email,
+      status: 'success',
+      details: {
+        campaignId: campaignId,
+        campaignName: campaign ? campaign.nombre : 'Bienvenida',
+        timestamp: new Date()
+      },
+      createdAt: new Date(),
+      read: false
+    });
+
+    // Actualizar estadísticas de la campaña si existe
+    if (campaign) {
+      await db.collection('campaigns').updateOne(
+        { _id: campaignId },
         { 
-          $set: { 
-            lastEmailSent: new Date(),
-            emailStatus: 'sent'
+          $inc: { 
+            'estadisticas.total': 1,
+            'estadisticas.enviados': 1
           }
         }
       );
     }
 
-    // Actualizar estado de los fallidos
-    if (failed.length > 0) {
-      await collection.updateMany(
-        { email: { $in: failed.map(r => r.message.split(' ')[4]) } },
-        { 
-          $set: { 
-            emailStatus: 'failed',
-            lastError: new Date()
-          }
+    // Actualizar el lead
+    await leadsCollection.updateOne(
+      { _id: lead._id },
+      { 
+        $set: { 
+          emailStatus: 'sent',
+          lastEmailSent: new Date()
         }
-      );
-    }
+      }
+    );
 
     return res.status(200).json({
       success: true,
-      message: 'Proceso de envío completado',
-      results: {
-        successful: successful.length,
-        failed: failed.length,
-        details: {
-          successful,
-          failed: failed.map(f => f.message)
-        }
-      }
+      message: 'Email enviado correctamente'
     });
 
   } catch (error) {
-    console.error('Error en el envío de emails:', error);
+    console.error('Error específico para', req.body.email, ':', error);
+    
+    // Registrar la notificación de error
+    if (req.body.leadId) {
+      await notificationsCollection.insertOne({
+        type: 'email_error',
+        leadId: req.body.leadId,
+        email: req.body.email,
+        status: 'error',
+        details: {
+          error: error.message,
+          timestamp: new Date()
+        },
+        createdAt: new Date(),
+        read: false
+      });
+    }
+
     return res.status(500).json({ 
       success: false, 
-      message: 'Error interno del servidor',
-      error: error.message 
+      message: 'Error al enviar el email',
+      error: error.message
     });
   }
 } 
