@@ -2,6 +2,7 @@ import Head from 'next/head';
 import { Inter } from "next/font/google";
 import { AlertTriangle, CheckCircle, Zap } from 'lucide-react';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -10,9 +11,9 @@ const inter = Inter({
 });
 
 export default function LandingGuiaErroresB2B() {
+  const router = useRouter();
   const [form, setForm] = useState({ nombre: '', email: '', sitioWeb: '', auditoria: false });
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
   const handleChange = e => {
@@ -24,7 +25,6 @@ export default function LandingGuiaErroresB2B() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setSuccess(false);
     try {
       // 1. Guardar lead en la DB
       const resLead = await fetch('/api/leads', {
@@ -52,8 +52,8 @@ export default function LandingGuiaErroresB2B() {
         })
       });
       if (!resNotify.ok) throw new Error('No se pudo notificar al equipo');
-      setSuccess(true);
       setForm({ nombre: '', email: '', sitioWeb: '', auditoria: false });
+      router.push('/landing-guia-errores-b2b/gracias');
     } catch (err) {
       setError('Hubo un error. Intenta de nuevo o contáctanos.');
     } finally {
@@ -129,19 +129,6 @@ export default function LandingGuiaErroresB2B() {
 
           {/* Formulario de descarga */}
           <div className="bg-white/10 rounded-2xl p-8 mb-12 max-w-xl mx-auto backdrop-blur-sm">
-            {success ? (
-              <div className="text-center text-green-400 font-semibold text-lg">
-                ¡Gracias! Te hemos enviado la guía y pronto te contactaremos para tu auditoría gratuita.
-                <a
-                  href="/recursos/Checklist-Estrategica-Digital.pdf"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-block mt-6 bg-primary hover:bg-primary-hover text-white font-bold py-3 px-6 rounded-lg text-lg shadow-lg transition-colors"
-                >
-                  📥 Descargar Guía PDF
-                </a>
-              </div>
-            ) : (
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label className="block mb-1 font-medium">Nombre</label>
@@ -164,7 +151,6 @@ export default function LandingGuiaErroresB2B() {
               </button>
               {error && <div className="text-red-400 text-center mt-4">{error}</div>}
             </form>
-            )}
           </div>
 
           {/* Sello de confianza */}
