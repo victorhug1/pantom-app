@@ -26,6 +26,10 @@ export default function LandingGuiaErroresB2B() {
     setLoading(true);
     setError('');
     try {
+      let sitioWeb = form.sitioWeb;
+      if (sitioWeb && sitioWeb.length > 0 && !/^https?:\/\//i.test(sitioWeb)) {
+        sitioWeb = 'https://' + sitioWeb;
+      }
       // 1. Guardar lead en la DB
       const resLead = await fetch('/api/leads', {
         method: 'POST',
@@ -36,10 +40,18 @@ export default function LandingGuiaErroresB2B() {
           segmento: 'guia_errores_b2b',
           fuente: 'landing',
           notas: form.auditoria ? 'Solicita auditoría gratuita' : '',
-          sitioWeb: form.sitioWeb,
+          sitioWeb,
         })
       });
-      if (!resLead.ok) throw new Error('No se pudo guardar el lead');
+      if (!resLead.ok) {
+        if (resLead.status === 409) {
+          setError('Este correo ya está registrado. Si necesitas ayuda, contáctanos.');
+        } else {
+          setError('Hubo un error. Intenta de nuevo o contáctanos.');
+        }
+        setLoading(false);
+        return;
+      }
       // 2. Notificar
       const resNotify = await fetch('/api/notify-lead', {
         method: 'POST',
@@ -47,7 +59,7 @@ export default function LandingGuiaErroresB2B() {
         body: JSON.stringify({
           nombre: form.nombre,
           email: form.email,
-          sitioWeb: form.sitioWeb,
+          sitioWeb,
           auditoria: form.auditoria,
         })
       });
@@ -140,7 +152,7 @@ export default function LandingGuiaErroresB2B() {
               </div>
               <div className="mb-4">
                 <label className="block mb-1 font-medium">Sitio web <span className="text-gray-400 text-xs">(opcional)</span></label>
-                <input type="url" name="sitioWeb" value={form.sitioWeb} onChange={handleChange} className="w-full rounded px-4 py-2 bg-black/60 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="https://tusitio.com" />
+                <input type="text" name="sitioWeb" value={form.sitioWeb} onChange={handleChange} className="w-full rounded px-4 py-2 bg-black/60 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-primary" placeholder="https://tusitio.com" />
               </div>
               <div className="flex items-center mb-6">
                 <input type="checkbox" id="auditoria" name="auditoria" checked={form.auditoria} onChange={handleChange} className="mr-2 accent-primary" />
