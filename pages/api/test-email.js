@@ -23,7 +23,14 @@ export default async function handler(req, res) {
         html: EMAIL.html
       })
     });
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonErr) {
+      const text = await response.text();
+      console.error('MailerSend non-JSON response:', response.status, text);
+      return res.status(500).json({ success: false, status: response.status, body: text });
+    }
     if (!response.ok) {
       console.error('MailerSend error:', data);
       return res.status(500).json({ success: false, error: data });

@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    await fetch('https://api.mailersend.com/v1/email', {
+    const response = await fetch('https://api.mailersend.com/v1/email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,8 +24,21 @@ export default async function handler(req, res) {
         html: EMAIL.html
       })
     });
-    return res.status(200).json({ success: true });
+    let data;
+    try {
+      data = await response.json();
+    } catch (jsonErr) {
+      const text = await response.text();
+      console.error('MailerSend non-JSON response:', response.status, text);
+      return res.status(500).json({ success: false, status: response.status, body: text });
+    }
+    if (!response.ok) {
+      console.error('MailerSend error:', data);
+      return res.status(500).json({ success: false, error: data });
+    }
+    return res.status(200).json({ success: true, data });
   } catch (err) {
+    console.error('Catch error:', err);
     return res.status(500).json({ success: false, error: err.message });
   }
 } 
