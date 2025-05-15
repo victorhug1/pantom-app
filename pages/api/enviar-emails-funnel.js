@@ -55,84 +55,92 @@ export default async function handler(req, res) {
     return res.status(401).json({ success: false, message: 'No autorizado' });
   }
 
-  const client = await clientPromise;
-  const db = client.db('pantom-app');
-  const collection = db.collection('leads');
-  const hoy = new Date();
+  try {
+    console.log('Intentando conectar a MongoDB...');
+    const client = await clientPromise;
+    console.log('Conexión exitosa a MongoDB');
+    const db = client.db('pantom-app');
+    console.log('Colección de leads obtenida');
+    const hoy = new Date();
+    console.log('Fecha actual:', hoy);
+    // Buscar hasta 100 leads pendientes de envío
+    const leads = await db.collection('leads').find({
+      estado_funnel: { $ne: 'completado' },
+      $or: [
+        { proximo_envio: { $lte: hoy } },
+        { proximo_envio: null }
+      ]
+    }).limit(100).toArray();
+    console.log('Leads encontrados:', leads.length);
 
-  // Buscar hasta 100 leads pendientes de envío
-  const leads = await collection.find({
-    estado_funnel: { $ne: 'completado' },
-    $or: [
-      { proximo_envio: { $lte: hoy } },
-      { proximo_envio: null }
-    ]
-  }).limit(100).toArray();
-
-  let enviados = 0;
-  let errores = [];
-
-  for (const lead of leads) {
-    let nuevoEstado = '';
-    let templateId = '';
-    if (lead.estado_funnel === 'pendiente') {
-      nuevoEstado = 'email_1';
-      templateId = TEMPLATES.pendiente;
-    } else if (lead.estado_funnel === 'email_1') {
-      nuevoEstado = 'email_2';
-      templateId = TEMPLATES.email_1;
-    } else if (lead.estado_funnel === 'email_2') {
-      nuevoEstado = 'completado';
-      templateId = TEMPLATES.email_2;
-    } else {
-      continue;
-    }
-
-    // Enviar email con MailerSend
-    try {
-      await fetch('https://api.mailersend.com/v1/email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.MAILERSEND_API_KEY}`
-        },
-        body: JSON.stringify({
-          from: { email: 'hola@pantom.net', name: 'Pantom Digital Studio' },
-          to: [{ email: lead.email, name: getNombreLead(lead) }],
-          template_id: templateId,
-          variables: [
-            {
-              email: lead.email,
-              substitutions: [
-                { var: 'nombre', value: getNombreLead(lead) }
-              ]
-            }
-          ]
-        })
-      });
-
-      // Calcular próxima fecha
-      let proximoEnvio = null;
-      if (nuevoEstado !== 'completado') {
-        proximoEnvio = sumarDias(hoy, DIAS_ENTRE_EMAILS);
+    let enviados = 0;
+    let errores = [];
+    console.log('Iniciando ciclo de envío...');
+    for (const lead of leads) {
+      let nuevoEstado = '';
+      let templateId = '';
+      if (lead.estado_funnel === 'pendiente') {
+        nuevoEstado = 'email_1';
+        templateId = TEMPLATES.pendiente;
+      } else if (lead.estado_funnel === 'email_1') {
+        nuevoEstado = 'email_2';
+        templateId = TEMPLATES.email_1;
+      } else if (lead.estado_funnel === 'email_2') {
+        nuevoEstado = 'completado';
+        templateId = TEMPLATES.email_2;
+      } else {
+        continue;
       }
 
-      // Actualizar lead
-      await collection.updateOne(
-        { _id: lead._id },
-        {
-          $set: {
-            estado_funnel: nuevoEstado,
-            fecha_ultimo_envio: hoy,
-            proximo_envio: proximoEnvio
-          }
-        }
-      );
-      enviados++;
-    } catch (err) {
-      errores.push({ email: lead.email, error: err.message });
-    }
-  }
+      // Enviar email con MailerSend
+      try {
+        await fetch('https://api.mailersend.com/v1/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.MAILERSEND_API_KEY}`
+          },
+          body: JSON.stringify({
+            from: { email: 'hola@pantom.net', name: 'Pantom Digital Studio' },
+            to: [{ email: lead.email, name: getNombreLead(lead) }],
+            template_id: templateId,
+            variables: [
+              {
+                email: lead.email,
+                substitutions: [
+                  { var: 'nombre', value: getNombreLead(lead) }
+                ]
+              }
+            ]
+          })
+        });
 
-  return res.status(200).json({ success: true, enviados, errores });
+        // Calcular próxima fecha
+        let proximoEnvio = null;
+        if (nuevoEstado !== 'completado') {
+          proximoEnvio = sumarDias(hoy, DIAS_ENTRE_EMAILS);
+        }
+
+        // Actualizar lead
+        await db.collection('leads').updateOne(
+          { _id: lead._id },
+          {
+            $set: {
+              estado_funnel: nuevoEstado,
+              fecha_ultimo_envio: hoy,
+              proximo_envio: proximoEnvio
+            }
+          }
+        );
+        enviados++;
+      } catch (err) {
+        errores.push({ email: lead.email, error: err.message });
+      }
+    }
+    console.log('Ciclo de envío finalizado. Enviados:', enviados, 'Errores:', errores.length);
+    return res.status(200).json({ success: true, enviados, errores });
+  } catch (error) {
+    console.error('Error en el endpoint:', error);
+    return res.status(500).json({ success: false, message: 'Error interno', error: error.message });
+  }
 } 

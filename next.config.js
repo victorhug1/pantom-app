@@ -41,10 +41,14 @@ const nextConfig = {
     ];
   },
   env: {
-    MAILERSEND_API_KEY: process.env.MAILERSEND_API_KEY,
+    MAILERSEND_API_KEY: 'mlsn.f4b3dab0872b733e9d404cdd0e12093cee5cc380a7601ee4896b769826210edc',
     MAILERSEND_TEMPLATE_ID: process.env.MAILERSEND_TEMPLATE_ID,
-    MAILERSEND_FROM_EMAIL: process.env.MAILERSEND_FROM_EMAIL,
-    MAILERSEND_FROM_NAME: process.env.MAILERSEND_FROM_NAME
+    MAILERSEND_FROM_EMAIL: 'hola@pantom.net',
+    MAILERSEND_FROM_NAME: 'Pantom',
+    MAILERSEND_SMTP_USER: 'MS_EiuBe8@pantom.net',
+    MAILERSEND_SMTP_PASS: 'mssp.IqQHDEC.3yxj6ljq9wxgdo2r.TvOaLjQ',
+    MAILERSEND_SMTP_HOST: 'smtp.mailersend.net',
+    MAILERSEND_SMTP_PORT: '587'
   }
 };
 
