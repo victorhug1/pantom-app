@@ -70,7 +70,7 @@ export default async function handler(req, res) {
         { proximo_envio: { $lte: hoy } },
         { proximo_envio: null }
       ]
-    }).limit(100).toArray();
+    }).limit(20).toArray();
     console.log('Leads encontrados:', leads.length);
 
     let enviados = 0;
