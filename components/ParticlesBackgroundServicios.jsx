@@ -1,58 +1,87 @@
+import { loadSlim } from "@tsparticles/slim";
 import { useCallback } from "react";
-import { Particles } from "@tsparticles/react";
-import { loadFull } from "@tsparticles/engine";
+import Particles from "react-tsparticles";
 
-export default function ParticlesBackgroundServicios() {
+const ParticlesBackgroundServicios = () => {
   const particlesInit = useCallback(async (engine) => {
-    await loadFull(engine);
+    await loadSlim(engine);
   }, []);
 
   return (
     <Particles
-      id="tsparticles-servicios"
+      id="tsparticles"
       init={particlesInit}
-      className="absolute inset-0 z-0"
       options={{
-        fullScreen: false,
         background: {
-          color: "transparent",
+          color: {
+            value: "#111111",
+          },
         },
-        fpsLimit: 60,
+        fpsLimit: 120,
+        interactivity: {
+          events: {
+            onClick: {
+              enable: true,
+              mode: "push",
+            },
+            onHover: {
+              enable: true,
+              mode: "repulse",
+            },
+            resize: true,
+          },
+          modes: {
+            push: {
+              quantity: 4,
+            },
+            repulse: {
+              distance: 200,
+              duration: 0.4,
+            },
+          },
+        },
         particles: {
-          number: {
-            value: 120,
-            density: { enable: true, value_area: 800 },
-          },
-          color: { value: ["#ea5a19", "#fff"] },
-          shape: { type: "circle" },
-          opacity: {
-            value: 0.5,
-            random: false,
-            anim: { enable: false },
-          },
-          size: {
-            value: 3.5,
-            random: true,
-            anim: { enable: false },
-          },
-          move: {
-            enable: true,
-            speed: 0.7,
-            direction: "none",
-            random: true,
-            straight: false,
-            outModes: { default: "out" },
+          color: {
+            value: "#ff9800",
           },
           links: {
+            color: "#ff9800",
+            distance: 150,
             enable: true,
-            distance: 130,
-            color: "#ea5a19",
-            opacity: 0.18,
-            width: 1.2,
+            opacity: 0.5,
+            width: 1,
+          },
+          move: {
+            direction: "none",
+            enable: true,
+            outModes: {
+              default: "bounce",
+            },
+            random: false,
+            speed: 2,
+            straight: false,
+          },
+          number: {
+            density: {
+              enable: true,
+              area: 800,
+            },
+            value: 80,
+          },
+          opacity: {
+            value: 0.5,
+          },
+          shape: {
+            type: "circle",
+          },
+          size: {
+            value: { min: 1, max: 5 },
           },
         },
         detectRetina: true,
       }}
     />
   );
-} 
+};
+
+export default ParticlesBackgroundServicios; 
