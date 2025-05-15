@@ -63,14 +63,14 @@ export default async function handler(req, res) {
     console.log('Colección de leads obtenida');
     const hoy = new Date();
     console.log('Fecha actual:', hoy);
-    // Buscar hasta 100 leads pendientes de envío
+    // Buscar hasta 1 lead pendiente de envío para evitar timeout
     const leads = await db.collection('leads').find({
       estado_funnel: { $ne: 'completado' },
       $or: [
         { proximo_envio: { $lte: hoy } },
         { proximo_envio: null }
       ]
-    }).limit(100).toArray();
+    }).limit(1).toArray();
     console.log('Leads encontrados:', leads.length);
 
     let enviados = 0;
