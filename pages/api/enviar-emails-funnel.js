@@ -45,7 +45,7 @@ function getNombreLead(lead) {
 }
 
 export default async function handler(req, res) {
-  // Leer el header de autorización en todas sus variantes
+  console.log('HEADERS:', req.headers);
   const authHeader = req.headers.authorization || req.headers.Authorization || req.headers['authorization'];
   console.log('TOKEN HEADER:', authHeader);
   console.log('TOKEN ENV:', process.env.FUNNEL_CRON_TOKEN);
