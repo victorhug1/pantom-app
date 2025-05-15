@@ -46,12 +46,12 @@ function getNombreLead(lead) {
 
 export default async function handler(req, res) {
   console.log('HEADERS:', req.headers);
-  const authHeader = req.headers.authorization || req.headers.Authorization || req.headers['authorization'];
+  const authHeader = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'] || req.headers['x-cronsecret'] || req.headers['x-cron_secret'];
   console.log('TOKEN HEADER:', authHeader);
   console.log('TOKEN ENV:', process.env.FUNNEL_CRON_TOKEN);
 
   // Protección simple: solo POST y con token
-  if (req.method !== 'POST' || authHeader !== `Bearer ${process.env.FUNNEL_CRON_TOKEN}`) {
+  if (req.method !== 'POST' || authHeader !== process.env.FUNNEL_CRON_TOKEN) {
     return res.status(401).json({ success: false, message: 'No autorizado' });
   }
 
