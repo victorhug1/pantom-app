@@ -45,10 +45,15 @@ function getNombreLead(lead) {
 }
 
 export default async function handler(req, res) {
+  // Logs detallados de la petición
+  console.log('=== INICIO DE LA PETICIÓN ===');
   console.log('Método:', req.method);
-  console.log('Query:', req.query);
-  console.log('Headers:', req.headers);
-  
+  console.log('URL:', req.url);
+  console.log('Query:', JSON.stringify(req.query, null, 2));
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('Body:', JSON.stringify(req.body, null, 2));
+  console.log('=== FIN DE LA PETICIÓN ===');
+
   // Obtener el token de todas las posibles fuentes
   const token = 
     req.headers['x-cron-secret'] || 
