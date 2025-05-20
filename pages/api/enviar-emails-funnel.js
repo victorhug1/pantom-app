@@ -46,7 +46,7 @@ function getNombreLead(lead) {
 
 export default async function handler(req, res) {
   console.log('HEADERS:', req.headers);
-  const authHeader = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'] || req.headers['x-cronsecret'] || req.headers['x-cron_secret'];
+  const authHeader = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'] || req.headers['x-cronsecret'] || req.headers['x-cron_secret'] || req.query.token;
   console.log('TOKEN HEADER:', authHeader);
   console.log('TOKEN ENV:', process.env.FUNNEL_CRON_TOKEN);
 
@@ -61,6 +61,7 @@ export default async function handler(req, res) {
 
   try {
     console.log('Intentando conectar a MongoDB...');
+    console.log('MongoDB URI:', process.env.MONGODB_URI ? 'URI presente' : 'URI no presente');
     const client = await clientPromise;
     console.log('Conexión exitosa a MongoDB');
     const db = client.db('pantom-app');
