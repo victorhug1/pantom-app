@@ -50,9 +50,13 @@ export default async function handler(req, res) {
   console.log('TOKEN HEADER:', authHeader);
   console.log('TOKEN ENV:', process.env.FUNNEL_CRON_TOKEN);
 
-  // Protección simple: solo POST y con token
-  if (req.method !== 'POST' || authHeader !== process.env.FUNNEL_CRON_TOKEN) {
+  // Protección simple: verificar token y método
+  if (authHeader !== process.env.FUNNEL_CRON_TOKEN) {
     return res.status(401).json({ success: false, message: 'No autorizado' });
+  }
+
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    return res.status(405).json({ success: false, message: 'Método no permitido' });
   }
 
   try {
