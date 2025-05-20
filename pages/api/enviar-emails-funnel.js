@@ -45,14 +45,36 @@ function getNombreLead(lead) {
 }
 
 export default async function handler(req, res) {
-  console.log('HEADERS:', req.headers);
-  const authHeader = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'] || req.headers['x-cronsecret'] || req.headers['x-cron_secret'] || req.query.token;
-  console.log('TOKEN HEADER:', authHeader);
-  console.log('TOKEN ENV:', process.env.FUNNEL_CRON_TOKEN);
+  console.log('Método:', req.method);
+  console.log('Query:', req.query);
+  console.log('Headers:', req.headers);
+  
+  // Obtener el token de todas las posibles fuentes
+  const token = 
+    req.headers['x-cron-secret'] || 
+    req.headers['X-Cron-Secret'] || 
+    req.headers['x-cronsecret'] || 
+    req.headers['x-cron_secret'] || 
+    req.query.token || 
+    req.query.TOKEN || 
+    req.query.Token;
 
-  // Protección simple: verificar token y método
-  if (authHeader !== process.env.FUNNEL_CRON_TOKEN) {
-    return res.status(401).json({ success: false, message: 'No autorizado' });
+  console.log('Token recibido:', token);
+  console.log('Token esperado:', process.env.FUNNEL_CRON_TOKEN);
+
+  // Verificar el token
+  if (!token || token !== process.env.FUNNEL_CRON_TOKEN) {
+    console.log('Token inválido o no proporcionado');
+    return res.status(401).json({ 
+      success: false, 
+      message: 'No autorizado',
+      debug: {
+        tokenRecibido: token,
+        tokenEsperado: process.env.FUNNEL_CRON_TOKEN,
+        headers: req.headers,
+        query: req.query
+      }
+    });
   }
 
   if (req.method !== 'GET' && req.method !== 'POST') {
