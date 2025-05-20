@@ -1,30 +1,61 @@
-import { useSession } from 'next-auth/react';
-import AdminLayout from '../../components/admin/AdminLayout';
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import {
+  Box,
+  Container,
+  Typography,
+  Paper,
+  Grid,
+  TextField,
+  Button,
+  Switch,
+  FormControlLabel,
+  Divider,
+  Alert,
+  CircularProgress,
+} from '@mui/material';
+import AdminHeader from '@/components/AdminHeader';
 
-export default function SettingsPage() {
-  const { data: session } = useSession();
+export default function Settings() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
   const [settings, setSettings] = useState({
-    emailSettings: {
+    general: {
+      siteName: '',
+      siteDescription: '',
+      maintenanceMode: false,
+    },
+    email: {
       smtpHost: '',
       smtpPort: '',
       smtpUser: '',
-      smtpPass: '',
+      smtpPassword: '',
       fromEmail: '',
       fromName: '',
+      replyTo: '',
     },
-    notificationSettings: {
-      emailNotifications: true,
-      browserNotifications: true,
-    },
-    securitySettings: {
-      twoFactorAuth: false,
-      sessionTimeout: 30,
+    notifications: {
+      enableEmailNotifications: true,
+      enablePushNotifications: true,
+      notificationTypes: {
+        newLead: true,
+        leadResponse: true,
+        campaignComplete: true,
+        systemAlert: true,
+      },
     },
   });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [message, setMessage] = useState({ type: '', text: '' });
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
 
   useEffect(() => {
     fetchSettings();
@@ -32,54 +63,14 @@ export default function SettingsPage() {
 
   const fetchSettings = async () => {
     try {
-      setLoading(true);
-      const response = await fetch('/api/settings');
+      const response = await fetch('/api/admin/settings');
       const data = await response.json();
-
-      if (data.success) {
-        setSettings(data.settings);
-      }
+      setSettings(data);
     } catch (error) {
       console.error('Error fetching settings:', error);
-      setMessage({
-        type: 'error',
-        text: 'Error al cargar la configuración',
-      });
+      setError('Error al cargar la configuración');
     } finally {
       setLoading(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setSaving(true);
-      const response = await fetch('/api/settings', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(settings),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        setMessage({
-          type: 'success',
-          text: 'Configuración guardada exitosamente',
-        });
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error) {
-      console.error('Error saving settings:', error);
-      setMessage({
-        type: 'error',
-        text: 'Error al guardar la configuración',
-      });
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -93,175 +84,287 @@ export default function SettingsPage() {
     }));
   };
 
-  if (loading) {
+  const handleNotificationTypeChange = (type, value) => {
+    setSettings((prev) => ({
+      ...prev,
+      notifications: {
+        ...prev.notifications,
+        notificationTypes: {
+          ...prev.notifications.notificationTypes,
+          [type]: value,
+        },
+      },
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSaving(true);
+    setSuccess(false);
+    setError('');
+
+    try {
+      const response = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(settings),
+      });
+
+      if (response.ok) {
+        setSuccess(true);
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Error al guardar la configuración');
+      }
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      setError('Error al guardar la configuración');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (status === 'loading' || loading) {
     return (
-      <AdminLayout>
-        <div className="flex justify-center items-center h-64">
-          <div className="text-gray-500">Cargando configuración...</div>
-        </div>
-      </AdminLayout>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <CircularProgress />
+      </Box>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900">Configuración</h1>
-        </div>
+    <>
+      <AdminHeader />
+      <Box sx={{ pt: 8, pb: 4 }}>
+        <Container maxWidth="xl">
+          <Typography variant="h4" gutterBottom>
+            Configuración
+          </Typography>
 
-        {message.text && (
-          <div
-            className={`p-4 rounded-md ${
-              message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
-            }`}
-          >
-            {message.text}
-          </div>
-        )}
+          {success && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              Configuración guardada exitosamente
+            </Alert>
+          )}
 
-        <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Configuración de Email */}
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Configuración de Email</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">SMTP Host</label>
-                <input
-                  type="text"
-                  value={settings.emailSettings.smtpHost}
-                  onChange={(e) => handleChange('emailSettings', 'smtpHost', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">SMTP Port</label>
-                <input
-                  type="text"
-                  value={settings.emailSettings.smtpPort}
-                  onChange={(e) => handleChange('emailSettings', 'smtpPort', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">SMTP User</label>
-                <input
-                  type="text"
-                  value={settings.emailSettings.smtpUser}
-                  onChange={(e) => handleChange('emailSettings', 'smtpUser', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">SMTP Password</label>
-                <input
-                  type="password"
-                  value={settings.emailSettings.smtpPass}
-                  onChange={(e) => handleChange('emailSettings', 'smtpPass', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">From Email</label>
-                <input
-                  type="email"
-                  value={settings.emailSettings.fromEmail}
-                  onChange={(e) => handleChange('emailSettings', 'fromEmail', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">From Name</label>
-                <input
-                  type="text"
-                  value={settings.emailSettings.fromName}
-                  onChange={(e) => handleChange('emailSettings', 'fromName', e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-          </div>
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-          {/* Configuración de Notificaciones */}
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Configuración de Notificaciones</h2>
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="emailNotifications"
-                  checked={settings.notificationSettings.emailNotifications}
-                  onChange={(e) =>
-                    handleChange('notificationSettings', 'emailNotifications', e.target.checked)
-                  }
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="emailNotifications" className="ml-2 block text-sm text-gray-900">
-                  Notificaciones por Email
-                </label>
-              </div>
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="browserNotifications"
-                  checked={settings.notificationSettings.browserNotifications}
-                  onChange={(e) =>
-                    handleChange('notificationSettings', 'browserNotifications', e.target.checked)
-                  }
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="browserNotifications" className="ml-2 block text-sm text-gray-900">
-                  Notificaciones del Navegador
-                </label>
-              </div>
-            </div>
-          </div>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={3}>
+              {/* Configuración General */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 3 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Configuración General
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Nombre del Sitio"
+                        value={settings.general.siteName}
+                        onChange={(e) => handleChange('general', 'siteName', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Descripción del Sitio"
+                        value={settings.general.siteDescription}
+                        onChange={(e) => handleChange('general', 'siteDescription', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={settings.general.maintenanceMode}
+                            onChange={(e) => handleChange('general', 'maintenanceMode', e.target.checked)}
+                          />
+                        }
+                        label="Modo Mantenimiento"
+                      />
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
 
-          {/* Configuración de Seguridad */}
-          <div className="bg-white shadow rounded-lg p-6">
-            <h2 className="text-lg font-medium text-gray-900 mb-4">Configuración de Seguridad</h2>
-            <div className="space-y-4">
-              <div className="flex items-center">
-                <input
-                  type="checkbox"
-                  id="twoFactorAuth"
-                  checked={settings.securitySettings.twoFactorAuth}
-                  onChange={(e) =>
-                    handleChange('securitySettings', 'twoFactorAuth', e.target.checked)
-                  }
-                  className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                />
-                <label htmlFor="twoFactorAuth" className="ml-2 block text-sm text-gray-900">
-                  Autenticación de Dos Factores
-                </label>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Tiempo de Sesión (minutos)
-                </label>
-                <input
-                  type="number"
-                  value={settings.securitySettings.sessionTimeout}
-                  onChange={(e) =>
-                    handleChange('securitySettings', 'sessionTimeout', parseInt(e.target.value))
-                  }
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-                />
-              </div>
-            </div>
-          </div>
+              {/* Configuración de Email */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 3 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Configuración de Email
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Servidor SMTP"
+                        value={settings.email.smtpHost}
+                        onChange={(e) => handleChange('email', 'smtpHost', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Puerto SMTP"
+                        value={settings.email.smtpPort}
+                        onChange={(e) => handleChange('email', 'smtpPort', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Usuario SMTP"
+                        value={settings.email.smtpUser}
+                        onChange={(e) => handleChange('email', 'smtpUser', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        type="password"
+                        label="Contraseña SMTP"
+                        value={settings.email.smtpPassword}
+                        onChange={(e) => handleChange('email', 'smtpPassword', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Email de Origen"
+                        value={settings.email.fromEmail}
+                        onChange={(e) => handleChange('email', 'fromEmail', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <TextField
+                        fullWidth
+                        label="Nombre de Origen"
+                        value={settings.email.fromName}
+                        onChange={(e) => handleChange('email', 'fromName', e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Email de Respuesta"
+                        value={settings.email.replyTo}
+                        onChange={(e) => handleChange('email', 'replyTo', e.target.value)}
+                      />
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
 
-          <div className="flex justify-end">
-            <button
-              type="submit"
-              disabled={saving}
-              className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              {saving ? 'Guardando...' : 'Guardar Cambios'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </AdminLayout>
+              {/* Configuración de Notificaciones */}
+              <Grid item xs={12}>
+                <Paper sx={{ p: 3 }}>
+                  <Typography variant="h6" gutterBottom>
+                    Configuración de Notificaciones
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={settings.notifications.enableEmailNotifications}
+                            onChange={(e) => handleChange('notifications', 'enableEmailNotifications', e.target.checked)}
+                          />
+                        }
+                        label="Habilitar Notificaciones por Email"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={settings.notifications.enablePushNotifications}
+                            onChange={(e) => handleChange('notifications', 'enablePushNotifications', e.target.checked)}
+                          />
+                        }
+                        label="Habilitar Notificaciones Push"
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Divider sx={{ my: 2 }} />
+                      <Typography variant="subtitle1" gutterBottom>
+                        Tipos de Notificaciones
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} md={6}>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={settings.notifications.notificationTypes.newLead}
+                                onChange={(e) => handleNotificationTypeChange('newLead', e.target.checked)}
+                              />
+                            }
+                            label="Nuevo Lead"
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={settings.notifications.notificationTypes.leadResponse}
+                                onChange={(e) => handleNotificationTypeChange('leadResponse', e.target.checked)}
+                              />
+                            }
+                            label="Respuesta de Lead"
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={settings.notifications.notificationTypes.campaignComplete}
+                                onChange={(e) => handleNotificationTypeChange('campaignComplete', e.target.checked)}
+                              />
+                            }
+                            label="Campaña Completada"
+                          />
+                        </Grid>
+                        <Grid item xs={12} md={6}>
+                          <FormControlLabel
+                            control={
+                              <Switch
+                                checked={settings.notifications.notificationTypes.systemAlert}
+                                onChange={(e) => handleNotificationTypeChange('systemAlert', e.target.checked)}
+                              />
+                            }
+                            label="Alertas del Sistema"
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              </Grid>
+
+              {/* Botón de Guardar */}
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={saving}
+                    sx={{ minWidth: 200 }}
+                  >
+                    {saving ? 'Guardando...' : 'Guardar Configuración'}
+                  </Button>
+                </Box>
+              </Grid>
+            </Grid>
+          </form>
+        </Container>
+      </Box>
+    </>
   );
 } 
