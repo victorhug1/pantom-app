@@ -24,13 +24,40 @@ import {
   Card,
   CardContent,
   CircularProgress,
-  Alert
+  Alert,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Tooltip
 } from '@mui/material';
 import {
   Delete as DeleteIcon,
   Edit as EditIcon,
-  Search as SearchIcon
+  Search as SearchIcon,
+  FilterList as FilterListIcon
 } from '@mui/icons-material';
+import AdminHeader from '@/components/AdminHeader';
+
+// Estados posibles para los leads
+const LEAD_STATES = {
+  PENDING: 'Pendiente',
+  CONTACTED: 'Contactado',
+  RESPONDED: 'Respondió',
+  REJECTED: 'Rechazado',
+  ACCEPTED: 'Aceptado',
+  COMPLETED: 'Completado',
+};
+
+// Estados de email
+const EMAIL_STATES = {
+  NOT_SENT: 'No enviado',
+  SENT: 'Enviado',
+  BOUNCED: 'Rebotó',
+  OPENED: 'Abierto',
+  CLICKED: 'Click',
+};
 
 export default function AdminLeads() {
   const { data: session, status } = useSession();
@@ -41,8 +68,17 @@ export default function AdminLeads() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [total, setTotal] = useState(0);
-  const [search, setSearch] = useState('');
-  const [estado, setEstado] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterState, setFilterState] = useState('');
+  const [filterEmailState, setFilterEmailState] = useState('');
+  const [editDialog, setEditDialog] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [selectedLead, setSelectedLead] = useState(null);
+  const [editForm, setEditForm] = useState({
+    state: '',
+    emailState: '',
+    notes: '',
+  });
   const [stats, setStats] = useState({});
 
   // Verificar autenticación
@@ -53,14 +89,15 @@ export default function AdminLeads() {
   }, [status, router]);
 
   // Cargar leads
-  const loadLeads = async () => {
+  const fetchLeads = async () => {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams({
         page: page + 1,
         limit: rowsPerPage,
-        ...(search && { search }),
-        ...(estado && { estado })
+        search: searchTerm,
+        state: filterState,
+        emailState: filterEmailState,
       });
 
       const response = await fetch(`/api/admin/leads?${queryParams}`);
@@ -82,9 +119,9 @@ export default function AdminLeads() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      loadLeads();
+      fetchLeads();
     }
-  }, [status, page, rowsPerPage, search, estado]);
+  }, [status, page, rowsPerPage, searchTerm, filterState, filterEmailState]);
 
   // Manejar cambios de página
   const handleChangePage = (event, newPage) => {
@@ -110,32 +147,81 @@ export default function AdminLeads() {
         throw new Error(data.message);
       }
 
-      loadLeads();
+      fetchLeads();
     } catch (err) {
       setError(err.message);
     }
   };
 
   // Manejar eliminación
-  const handleDelete = async (id) => {
-    if (!confirm('¿Estás seguro de que quieres eliminar este lead?')) {
-      return;
-    }
+  const handleDelete = (lead) => {
+    setSelectedLead(lead);
+    setDeleteDialog(true);
+  };
 
+  const handleEdit = (lead) => {
+    setSelectedLead(lead);
+    setEditForm({
+      state: lead.state || '',
+      emailState: lead.emailState || '',
+      notes: lead.notes || '',
+    });
+    setEditDialog(true);
+  };
+
+  const handleEditSubmit = async () => {
     try {
-      const response = await fetch(`/api/admin/leads?id=${id}`, {
-        method: 'DELETE'
+      const response = await fetch(`/api/admin/leads/${selectedLead._id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editForm),
       });
 
-      const data = await response.json();
-      if (!data.success) {
-        throw new Error(data.message);
+      if (response.ok) {
+        fetchLeads();
+        setEditDialog(false);
       }
-
-      loadLeads();
-    } catch (err) {
-      setError(err.message);
+    } catch (error) {
+      console.error('Error updating lead:', error);
     }
+  };
+
+  const handleDeleteConfirm = async () => {
+    try {
+      const response = await fetch(`/api/admin/leads/${selectedLead._id}`, {
+        method: 'DELETE',
+      });
+
+      if (response.ok) {
+        fetchLeads();
+        setDeleteDialog(false);
+      }
+    } catch (error) {
+      console.error('Error deleting lead:', error);
+    }
+  };
+
+  const getStateColor = (state) => {
+    const colors = {
+      [LEAD_STATES.PENDING]: 'default',
+      [LEAD_STATES.CONTACTED]: 'info',
+      [LEAD_STATES.RESPONDED]: 'primary',
+      [LEAD_STATES.REJECTED]: 'error',
+      [LEAD_STATES.ACCEPTED]: 'success',
+      [LEAD_STATES.COMPLETED]: 'success',
+    };
+    return colors[state] || 'default';
+  };
+
+  const getEmailStateColor = (state) => {
+    const colors = {
+      [EMAIL_STATES.NOT_SENT]: 'default',
+      [EMAIL_STATES.SENT]: 'info',
+      [EMAIL_STATES.BOUNCED]: 'error',
+      [EMAIL_STATES.OPENED]: 'success',
+      [EMAIL_STATES.CLICKED]: 'success',
+    };
+    return colors[state] || 'default';
   };
 
   if (status === 'loading') {
@@ -147,141 +233,210 @@ export default function AdminLeads() {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Typography variant="h4" gutterBottom>
-        Administración de Leads
-      </Typography>
+    <>
+      <AdminHeader />
+      <Box sx={{ pt: 8, pb: 4 }}>
+        <Container maxWidth="xl">
+          <Paper sx={{ p: 3, mb: 3 }}>
+            <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+              <TextField
+                fullWidth
+                label="Buscar"
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
+                }}
+              />
+              <FormControl sx={{ minWidth: 200 }}>
+                <InputLabel>Estado</InputLabel>
+                <Select
+                  value={filterState}
+                  label="Estado"
+                  onChange={(e) => setFilterState(e.target.value)}
+                >
+                  <MenuItem value="">Todos</MenuItem>
+                  {Object.values(LEAD_STATES).map((state) => (
+                    <MenuItem key={state} value={state}>
+                      {state}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ minWidth: 200 }}>
+                <InputLabel>Estado Email</InputLabel>
+                <Select
+                  value={filterEmailState}
+                  label="Estado Email"
+                  onChange={(e) => setFilterEmailState(e.target.value)}
+                >
+                  <MenuItem value="">Todos</MenuItem>
+                  {Object.values(EMAIL_STATES).map((state) => (
+                    <MenuItem key={state} value={state}>
+                      {state}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Box>
 
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
+            <TableContainer>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Estado</TableCell>
+                    <TableCell>Estado Email</TableCell>
+                    <TableCell>Notas</TableCell>
+                    <TableCell>Fecha</TableCell>
+                    <TableCell>Acciones</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {loading ? (
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">
+                        <CircularProgress />
+                      </TableCell>
+                    </TableRow>
+                  ) : leads.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">
+                        No hay leads que coincidan con los filtros
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    leads.map((lead) => (
+                      <TableRow key={lead._id}>
+                        <TableCell>{lead.email}</TableCell>
+                        <TableCell>{lead.name}</TableCell>
+                        <TableCell>
+                          <Chip
+                            label={lead.state || LEAD_STATES.PENDING}
+                            color={getStateColor(lead.state)}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Chip
+                            label={lead.emailState || EMAIL_STATES.NOT_SENT}
+                            color={getEmailStateColor(lead.emailState)}
+                            size="small"
+                          />
+                        </TableCell>
+                        <TableCell>
+                          <Tooltip title={lead.notes || 'Sin notas'}>
+                            <Typography noWrap sx={{ maxWidth: 200 }}>
+                              {lead.notes || '-'}
+                            </Typography>
+                          </Tooltip>
+                        </TableCell>
+                        <TableCell>
+                          {new Date(lead.createdAt).toLocaleDateString()}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleEdit(lead)}
+                            color="primary"
+                          >
+                            <EditIcon />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => handleDelete(lead)}
+                            color="error"
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
-      {/* Estadísticas */}
-      <Grid container spacing={3} sx={{ mb: 3 }}>
-        {Object.entries(stats).map(([estado, count]) => (
-          <Grid item xs={12} sm={6} md={3} key={estado}>
-            <Card>
-              <CardContent>
-                <Typography color="textSecondary" gutterBottom>
-                  {estado === 'sin_estado' ? 'Sin Estado' : estado}
-                </Typography>
-                <Typography variant="h5">
-                  {count}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-
-      {/* Filtros */}
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6}>
-            <TextField
-              fullWidth
-              label="Buscar"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              InputProps={{
-                startAdornment: <SearchIcon />
-              }}
+            <TablePagination
+              component="div"
+              count={total}
+              page={page}
+              onPageChange={handleChangePage}
+              rowsPerPage={rowsPerPage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
             />
-          </Grid>
-          <Grid item xs={12} sm={6}>
+          </Paper>
+        </Container>
+      </Box>
+
+      {/* Diálogo de edición */}
+      <Dialog open={editDialog} onClose={() => setEditDialog(false)}>
+        <DialogTitle>Editar Lead</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
               <InputLabel>Estado</InputLabel>
               <Select
-                value={estado}
+                value={editForm.state}
                 label="Estado"
-                onChange={(e) => setEstado(e.target.value)}
+                onChange={(e) => setEditForm({ ...editForm, state: e.target.value })}
               >
-                <MenuItem value="">Todos</MenuItem>
-                <MenuItem value="pendiente">Pendiente</MenuItem>
-                <MenuItem value="email_1">Email 1</MenuItem>
-                <MenuItem value="email_2">Email 2</MenuItem>
-                <MenuItem value="completado">Completado</MenuItem>
+                {Object.values(LEAD_STATES).map((state) => (
+                  <MenuItem key={state} value={state}>
+                    {state}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
-          </Grid>
-        </Grid>
-      </Paper>
+            <FormControl fullWidth>
+              <InputLabel>Estado Email</InputLabel>
+              <Select
+                value={editForm.emailState}
+                label="Estado Email"
+                onChange={(e) => setEditForm({ ...editForm, emailState: e.target.value })}
+              >
+                {Object.values(EMAIL_STATES).map((state) => (
+                  <MenuItem key={state} value={state}>
+                    {state}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <TextField
+              fullWidth
+              label="Notas"
+              multiline
+              rows={4}
+              value={editForm.notes}
+              onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setEditDialog(false)}>Cancelar</Button>
+          <Button onClick={handleEditSubmit} variant="contained">
+            Guardar
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-      {/* Tabla de leads */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Email</TableCell>
-              <TableCell>Empresa</TableCell>
-              <TableCell>Representante</TableCell>
-              <TableCell>Estado</TableCell>
-              <TableCell>Último Envío</TableCell>
-              <TableCell>Acciones</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  <CircularProgress />
-                </TableCell>
-              </TableRow>
-            ) : leads.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={6} align="center">
-                  No hay leads que coincidan con los filtros
-                </TableCell>
-              </TableRow>
-            ) : (
-              leads.map((lead) => (
-                <TableRow key={lead._id}>
-                  <TableCell>{lead.email}</TableCell>
-                  <TableCell>{lead.empresa}</TableCell>
-                  <TableCell>{lead.representanteLegal}</TableCell>
-                  <TableCell>
-                    <Select
-                      value={lead.estado_funnel || ''}
-                      onChange={(e) => handleEstadoChange(lead._id, e.target.value)}
-                      size="small"
-                    >
-                      <MenuItem value="pendiente">Pendiente</MenuItem>
-                      <MenuItem value="email_1">Email 1</MenuItem>
-                      <MenuItem value="email_2">Email 2</MenuItem>
-                      <MenuItem value="completado">Completado</MenuItem>
-                    </Select>
-                  </TableCell>
-                  <TableCell>
-                    {lead.fecha_ultimo_envio
-                      ? new Date(lead.fecha_ultimo_envio).toLocaleDateString()
-                      : 'Nunca'}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDelete(lead._id)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={total}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-          labelRowsPerPage="Filas por página"
-        />
-      </TableContainer>
-    </Container>
+      {/* Diálogo de eliminación */}
+      <Dialog open={deleteDialog} onClose={() => setDeleteDialog(false)}>
+        <DialogTitle>Confirmar eliminación</DialogTitle>
+        <DialogContent>
+          <Typography>
+            ¿Estás seguro de que deseas eliminar este lead? Esta acción no se puede deshacer.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteDialog(false)}>Cancelar</Button>
+          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+            Eliminar
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 } 

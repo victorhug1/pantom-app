@@ -6,136 +6,110 @@ export default async function handler(req, res) {
   // Verificar autenticación
   const session = await getServerSession(req, res, authOptions);
   if (!session) {
-    return res.status(401).json({ success: false, message: 'No autorizado' });
+    return res.status(401).json({ error: 'No autorizado' });
   }
 
-  try {
-    const client = await clientPromise;
-    const db = client.db('pantom-app');
-    const collection = db.collection('leads');
+  const { method } = req;
+  const client = await clientPromise;
+  const db = client.db('pantom-app');
 
-    switch (req.method) {
-      case 'GET':
-        // Obtener leads con paginación y filtros
-        const { page = 1, limit = 10, estado, search } = req.query;
+  switch (method) {
+    case 'GET':
+      try {
+        const { page = 1, limit = 10, search = '', state = '', emailState = '' } = req.query;
         const skip = (parseInt(page) - 1) * parseInt(limit);
 
-        let query = {};
-        if (estado) {
-          query.estado_funnel = estado;
-        }
+        // Construir el filtro de búsqueda
+        let filter = {};
         if (search) {
-          query.$or = [
-            { email: { $regex: search, $options: 'i' } },
-            { empresa: { $regex: search, $options: 'i' } },
-            { representanteLegal: { $regex: search, $options: 'i' } }
-          ];
+          filter = {
+            $or: [
+              { email: { $regex: search, $options: 'i' } },
+              { name: { $regex: search, $options: 'i' } },
+              { notes: { $regex: search, $options: 'i' } },
+              { empresa: { $regex: search, $options: 'i' } },
+              { representanteLegal: { $regex: search, $options: 'i' } },
+            ],
+          };
         }
 
-        const [leads, total] = await Promise.all([
-          collection.find(query)
-            .sort({ fecha_creacion: -1 })
-            .skip(skip)
-            .limit(parseInt(limit))
-            .toArray(),
-          collection.countDocuments(query)
-        ]);
+        // Añadir filtros de estado
+        if (state) {
+          filter.state = state;
+        }
+        if (emailState) {
+          filter.emailState = emailState;
+        }
 
-        // Obtener estadísticas
-        const stats = await collection.aggregate([
-          {
-            $group: {
-              _id: '$estado_funnel',
-              count: { $sum: 1 }
-            }
-          }
-        ]).toArray();
+        const leads = await db
+          .collection('leads')
+          .find(filter)
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(parseInt(limit))
+          .toArray();
 
-        return res.status(200).json({
-          success: true,
-          data: {
-            leads,
-            pagination: {
-              total,
-              page: parseInt(page),
-              limit: parseInt(limit),
-              pages: Math.ceil(total / parseInt(limit))
-            },
-            stats: stats.reduce((acc, curr) => {
-              acc[curr._id || 'sin_estado'] = curr.count;
-              return acc;
-            }, {})
-          }
+        const total = await db.collection('leads').countDocuments(filter);
+
+        res.status(200).json({
+          leads,
+          total,
+          page: parseInt(page),
+          totalPages: Math.ceil(total / parseInt(limit)),
         });
+      } catch (error) {
+        console.error('Error fetching leads:', error);
+        res.status(500).json({ error: 'Error al obtener los leads' });
+      }
+      break;
 
-      case 'PUT':
-        // Actualizar estado de un lead
-        const { id, estado_funnel } = req.body;
-        if (!id || !estado_funnel) {
-          return res.status(400).json({
-            success: false,
-            message: 'ID y estado son requeridos'
-          });
-        }
+    case 'PUT':
+      try {
+        const { id } = req.query;
+        const { state, emailState, notes } = req.body;
 
-        const result = await collection.updateOne(
+        const result = await db.collection('leads').updateOne(
           { _id: id },
           {
             $set: {
-              estado_funnel,
-              fecha_ultimo_envio: new Date(),
-              proximo_envio: estado_funnel === 'completado' ? null : new Date()
-            }
+              state,
+              emailState,
+              notes,
+              updatedAt: new Date(),
+            },
           }
         );
 
         if (result.matchedCount === 0) {
-          return res.status(404).json({
-            success: false,
-            message: 'Lead no encontrado'
-          });
+          return res.status(404).json({ error: 'Lead no encontrado' });
         }
 
-        return res.status(200).json({
-          success: true,
-          message: 'Lead actualizado correctamente'
-        });
+        res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Error updating lead:', error);
+        res.status(500).json({ error: 'Error al actualizar el lead' });
+      }
+      break;
 
-      case 'DELETE':
-        // Eliminar un lead
-        const { id: leadId } = req.query;
-        if (!leadId) {
-          return res.status(400).json({
-            success: false,
-            message: 'ID es requerido'
-          });
+    case 'DELETE':
+      try {
+        const { id } = req.query;
+
+        const result = await db.collection('leads').deleteOne({ _id: id });
+
+        if (result.deletedCount === 0) {
+          return res.status(404).json({ error: 'Lead no encontrado' });
         }
 
-        const deleteResult = await collection.deleteOne({ _id: leadId });
-        if (deleteResult.deletedCount === 0) {
-          return res.status(404).json({
-            success: false,
-            message: 'Lead no encontrado'
-          });
-        }
+        res.status(200).json({ success: true });
+      } catch (error) {
+        console.error('Error deleting lead:', error);
+        res.status(500).json({ error: 'Error al eliminar el lead' });
+      }
+      break;
 
-        return res.status(200).json({
-          success: true,
-          message: 'Lead eliminado correctamente'
-        });
-
-      default:
-        return res.status(405).json({
-          success: false,
-          message: 'Método no permitido'
-        });
-    }
-  } catch (error) {
-    console.error('Error en el endpoint admin/leads:', error);
-    return res.status(500).json({
-      success: false,
-      message: 'Error interno del servidor',
-      error: error.message
-    });
+    default:
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+      res.status(405).end(`Method ${method} Not Allowed`);
   }
 } 
