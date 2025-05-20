@@ -1,6 +1,7 @@
 import clientPromise from '../../../lib/mongodb';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]';
+import { ObjectId } from 'mongodb';
 
 export default async function handler(req, res) {
   // Verificar autenticación
@@ -69,7 +70,7 @@ export default async function handler(req, res) {
         const { state, emailState, notes } = req.body;
 
         const result = await db.collection('leads').updateOne(
-          { _id: id },
+          { _id: new ObjectId(id) },
           {
             $set: {
               state,
@@ -95,7 +96,7 @@ export default async function handler(req, res) {
       try {
         const { id } = req.query;
 
-        const result = await db.collection('leads').deleteOne({ _id: id });
+        const result = await db.collection('leads').deleteOne({ _id: new ObjectId(id) });
 
         if (result.deletedCount === 0) {
           return res.status(404).json({ error: 'Lead no encontrado' });
