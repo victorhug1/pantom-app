@@ -94,7 +94,7 @@ async function importLeadsFromCSV(filePath) {
     });
 
     // Conectar a MongoDB
-    await client.connect();
+  await client.connect();
     console.log('Conectado a MongoDB');
 
     const db = client.db(DB_NAME);
@@ -122,7 +122,7 @@ async function importLeadsFromCSV(filePath) {
   } catch (error) {
     console.error('Error durante la importación:', error);
   } finally {
-    await client.close();
+  await client.close();
     console.log('Conexión a MongoDB cerrada');
   }
 }

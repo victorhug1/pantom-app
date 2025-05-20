@@ -33,17 +33,17 @@ export default async function handler(req, res) {
           fechaRegistro = new Date().toISOString() 
         } = lead;
 
-        // Validación básica
-        if (!nombre || !email || !segmento) {
+      // Validación básica
+      if (!nombre || !email || !segmento) {
           errors.push({ email, error: 'Faltan campos requeridos' });
           continue;
-        }
+      }
 
         // Validación de email
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
           errors.push({ email, error: 'Email inválido' });
           continue;
-        }
+      }
 
         // Verificar duplicados en el lote actual
         if (existingEmails.has(email)) {
@@ -53,9 +53,9 @@ export default async function handler(req, res) {
         existingEmails.add(email);
 
         leadsToInsert.push({
-          nombre,
-          email,
-          segmento,
+        nombre,
+        email,
+        segmento,
           telefono,
           empresa,
           cargo,
@@ -66,9 +66,9 @@ export default async function handler(req, res) {
           tags,
           estado,
           ultimaInteraccion: new Date(ultimaInteraccion),
-          fechaRegistro: new Date(fechaRegistro),
-          createdAt: new Date(),
-          updatedAt: new Date()
+        fechaRegistro: new Date(fechaRegistro),
+        createdAt: new Date(),
+        updatedAt: new Date()
         });
       }
 
