@@ -1,0 +1,15 @@
+   name: Enviar Emails Funnel
+
+   on:
+     schedule:
+       - cron: '0 8 * * *'  # 8:00 UTC
+       - cron: '0 14 * * *' # 14:00 UTC
+
+   jobs:
+     enviar-emails:
+       runs-on: ubuntu-latest
+       steps:
+         - name: Llamar al endpoint
+           run: |
+             curl -X GET "https://pantom-n8pu5pm7o-victorhug1s-projects.vercel.app/api/enviar-emails-funnel" \
+             -H "Authorization: supersecreto123"
