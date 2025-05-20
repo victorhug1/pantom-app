@@ -1,8 +1,8 @@
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../../auth/[...nextauth]';
-import clientPromise from '../../../../lib/mongodb';
+import { authOptions } from '../../../../auth/[...nextauth]';
+import clientPromise from '../../../../../lib/mongodb';
 import { ObjectId } from 'mongodb';
-import { sendCampaignEmail } from '../../../../lib/mailersend';
+import { sendCampaignEmail } from '../../../../../lib/mailersend';
 
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions);
