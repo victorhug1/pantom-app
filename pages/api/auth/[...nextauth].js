@@ -3,33 +3,25 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import clientPromise from '../../../lib/mongodb';
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email" },
+        username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        try {
-          const client = await clientPromise;
-          const db = client.db('pantom-app');
-          const user = await db.collection('users').findOne({ email: credentials.email });
-
-          if (user && await bcrypt.compare(credentials.password, user.password)) {
-            return {
-              id: user._id.toString(),
-              email: user.email,
-              name: user.name,
-              role: user.role
-            };
-          }
-          return null;
-        } catch (error) {
-          console.error('Error en autenticación:', error);
-          return null;
+        // Verificar credenciales
+        if (credentials.username === process.env.ADMIN_USERNAME && 
+            credentials.password === process.env.ADMIN_PASSWORD) {
+          return {
+            id: 1,
+            name: 'Admin',
+            email: 'admin@pantom.net'
+          };
         }
+        return null;
       }
     })
   ],
@@ -37,25 +29,56 @@ export default NextAuth({
     strategy: 'jwt',
     maxAge: 30 * 24 * 60 * 60, // 30 días
   },
+  cookies: {
+    sessionToken: {
+      name: `__Secure-next-auth.session-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+        domain: process.env.NEXT_PUBLIC_DOMAIN || undefined
+      }
+    },
+    callbackUrl: {
+      name: `__Secure-next-auth.callback-url`,
+      options: {
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+        domain: process.env.NEXT_PUBLIC_DOMAIN || undefined
+      }
+    },
+    csrfToken: {
+      name: `__Host-next-auth.csrf-token`,
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: true,
+        domain: process.env.NEXT_PUBLIC_DOMAIN || undefined
+      }
+    }
+  },
+  pages: {
+    signIn: '/auth/signin',
+    error: '/auth/error',
+  },
+  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.role = user.role;
-        token.id = user.id;
+        token.role = 'admin';
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
         session.user.role = token.role;
-        session.user.id = token.id;
       }
       return session;
     }
-  },
-  pages: {
-    signIn: '/admin/login',
-    error: '/admin/login',
-  },
-  secret: process.env.NEXTAUTH_SECRET,
-}); 
+  }
+};
+
+export default NextAuth(authOptions); 
