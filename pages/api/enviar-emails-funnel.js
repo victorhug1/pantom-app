@@ -62,6 +62,11 @@ export default async function handler(req, res) {
   console.log('Body:', JSON.stringify(req.body, null, 2));
   console.log('=== FIN DE LA PETICIÓN ===');
 
+  // Verificar método
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    return res.status(405).json({ success: false, message: 'Método no permitido' });
+  }
+
   // Obtener el token de todas las posibles fuentes
   const token = 
     req.headers['x-cron-secret'] || 
@@ -90,19 +95,17 @@ export default async function handler(req, res) {
     });
   }
 
-  if (req.method !== 'GET' && req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: 'Método no permitido' });
-  }
-
   try {
     console.log('Intentando conectar a MongoDB...');
-    console.log('MongoDB URI:', process.env.MONGODB_URI ? 'URI presente' : 'URI no presente');
     const client = await clientPromise;
     console.log('Conexión exitosa a MongoDB');
+    
     const db = client.db('pantom-app');
     console.log('Colección de leads obtenida');
+    
     const hoy = new Date();
     console.log('Fecha actual:', hoy);
+
     // Buscar hasta 50 leads pendientes de envío
     const leads = await db.collection('leads').find({
       estado_funnel: { $ne: 'completado' },
@@ -111,30 +114,42 @@ export default async function handler(req, res) {
         { proximo_envio: null }
       ]
     }).limit(50).toArray();
+    
     console.log('Leads encontrados:', leads.length);
+
+    if (leads.length === 0) {
+      return res.status(200).json({ 
+        success: true, 
+        message: 'No hay leads pendientes de envío',
+        enviados: 0,
+        errores: []
+      });
+    }
 
     let enviados = 0;
     let errores = [];
     console.log('Iniciando ciclo de envío...');
+    
     for (const lead of leads) {
-      let nuevoEstado = '';
-      let templateId = '';
-      if (lead.estado_funnel === 'pendiente') {
-        nuevoEstado = 'email_1';
-        templateId = TEMPLATES.pendiente;
-      } else if (lead.estado_funnel === 'email_1') {
-        nuevoEstado = 'email_2';
-        templateId = TEMPLATES.email_1;
-      } else if (lead.estado_funnel === 'email_2') {
-        nuevoEstado = 'completado';
-        templateId = TEMPLATES.email_2;
-      } else {
-        continue;
-      }
-
-      // Enviar email con MailerSend
       try {
-        await fetch('https://api.mailersend.com/v1/email', {
+        let nuevoEstado = '';
+        let templateId = '';
+        
+        if (lead.estado_funnel === 'pendiente') {
+          nuevoEstado = 'email_1';
+          templateId = TEMPLATES.pendiente;
+        } else if (lead.estado_funnel === 'email_1') {
+          nuevoEstado = 'email_2';
+          templateId = TEMPLATES.email_1;
+        } else if (lead.estado_funnel === 'email_2') {
+          nuevoEstado = 'completado';
+          templateId = TEMPLATES.email_2;
+        } else {
+          continue;
+        }
+
+        // Enviar email con MailerSend
+        const mailerResponse = await fetch('https://api.mailersend.com/v1/email', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -155,6 +170,10 @@ export default async function handler(req, res) {
           })
         });
 
+        if (!mailerResponse.ok) {
+          throw new Error(`Error en MailerSend: ${mailerResponse.status} ${mailerResponse.statusText}`);
+        }
+
         // Calcular próxima fecha
         let proximoEnvio = null;
         if (nuevoEstado !== 'completado') {
@@ -172,15 +191,33 @@ export default async function handler(req, res) {
             }
           }
         );
+        
         enviados++;
+        console.log(`Email enviado exitosamente a ${lead.email}`);
       } catch (err) {
-        errores.push({ email: lead.email, error: err.message });
+        console.error(`Error procesando lead ${lead.email}:`, err);
+        errores.push({ 
+          email: lead.email, 
+          error: err.message,
+          estado: lead.estado_funnel
+        });
       }
     }
+
     console.log('Ciclo de envío finalizado. Enviados:', enviados, 'Errores:', errores.length);
-    return res.status(200).json({ success: true, enviados, errores });
+    return res.status(200).json({ 
+      success: true, 
+      enviados, 
+      errores,
+      timestamp: new Date().toISOString()
+    });
   } catch (error) {
     console.error('Error en el endpoint:', error);
-    return res.status(500).json({ success: false, message: 'Error interno', error: error.message });
+    return res.status(500).json({ 
+      success: false, 
+      message: 'Error interno', 
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 } 
