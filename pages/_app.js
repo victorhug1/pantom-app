@@ -15,15 +15,20 @@ const inter = Inter({
 // Tema personalizado
 const theme = createTheme({
   palette: {
-    mode: 'light',
+    mode: 'dark',
     primary: {
-      main: '#ff9800',
-    },
-    secondary: {
       main: '#ea5a19',
     },
+    secondary: {
+      main: '#ff8f59',
+    },
     background: {
-      default: '#f5f5f5',
+      default: '#0a0a0a',
+      paper: '#171717',
+    },
+    text: {
+      primary: '#ededed',
+      secondary: '#a3a3a3',
     },
   },
   typography: {
@@ -42,7 +47,23 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           borderRadius: 12,
-          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+          backgroundColor: '#171717',
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#0a0a0a',
+          borderBottom: '1px solid #262626',
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: '#171717',
         },
       },
     },
@@ -57,7 +78,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
         <Head>
           <link rel="icon" href="/pantom_logo.svg" />
           <link rel="apple-touch-icon" href="/pantom_logo.svg" />
-          <meta name="theme-color" content="#000000" />
+          <meta name="theme-color" content="#0a0a0a" />
         </Head>
         <main className={inter.className}>
           <Component {...pageProps} />
