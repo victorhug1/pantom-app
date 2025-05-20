@@ -1,6 +1,13 @@
 {
-  "crons": [
-    { "path": "/api/enviar-emails-funnel", "schedule": "0 8 * * *" },
-    { "path": "/api/enviar-emails-funnel", "schedule": "0 14 * * *" }
+  "crons": [],
+  "routes": [
+    {
+      "src": "/api/enviar-emails-funnel",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Cron-Secret, Content-Type"
+      }
+    }
   ]
 } 

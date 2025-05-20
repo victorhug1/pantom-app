@@ -44,6 +44,14 @@ function getNombreLead(lead) {
   return lead.representanteLegal || lead.representante_legal || lead.nombre || lead.empresa || 'Emprendedor';
 }
 
+// Configuración para deshabilitar la protección de Vercel
+export const config = {
+  api: {
+    bodyParser: true,
+    externalResolver: true,
+  },
+};
+
 export default async function handler(req, res) {
   // Logs detallados de la petición
   console.log('=== INICIO DE LA PETICIÓN ===');
