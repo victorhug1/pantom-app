@@ -81,13 +81,6 @@ export default function AdminLeads() {
   });
   const [stats, setStats] = useState({});
 
-  // Verificar autenticación
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/api/auth/signin');
-    }
-  }, [status, router]);
-
   // Cargar leads
   const fetchLeads = async () => {
     try {
@@ -118,10 +111,8 @@ export default function AdminLeads() {
   };
 
   useEffect(() => {
-    if (status === 'authenticated') {
-      fetchLeads();
-    }
-  }, [status, page, rowsPerPage, searchTerm, filterState, filterEmailState]);
+    fetchLeads();
+  }, [page, rowsPerPage, searchTerm, filterState, filterEmailState]);
 
   // Manejar cambios de página
   const handleChangePage = (event, newPage) => {

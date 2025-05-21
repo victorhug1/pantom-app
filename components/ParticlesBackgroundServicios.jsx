@@ -63,7 +63,7 @@ const ParticlesBackgroundServicios = () => {
           },
           number: {
             density: {
-              enable: true,
+            enable: true,
               area: 800,
             },
             value: 80,

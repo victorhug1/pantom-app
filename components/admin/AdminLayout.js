@@ -4,18 +4,18 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function AdminLayout({ children }) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  // const { data: session, status } = useSession();
+  // const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
-  if (status === 'loading') {
-    return <div>Cargando...</div>;
-  }
+  // if (status === 'loading') {
+  //   return <div>Cargando...</div>;
+  // }
 
-  if (status === 'unauthenticated') {
-    router.push('/admin/login');
-    return null;
-  }
+  // if (status === 'unauthenticated') {
+  //   router.push('/admin/login');
+  //   return null;
+  // }
 
   const menuItems = [
     { href: '/admin', label: 'Dashboard', icon: '📊' },
@@ -43,7 +43,7 @@ export default function AdminLayout({ children }) {
               key={item.href}
               href={item.href}
               className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 ${
-                router.pathname === item.href ? 'bg-gray-100' : ''
+                typeof window !== 'undefined' && window.location.pathname === item.href ? 'bg-gray-100' : ''
               }`}
             >
               <span className="mr-2">{item.icon}</span>
@@ -65,13 +65,13 @@ export default function AdminLayout({ children }) {
               ☰
             </button>
             <div className="flex items-center">
-              <span className="mr-4">{session.user.email}</span>
-              <button
+              {/* <span className="mr-4">{session.user.email}</span> */}
+              {/* <button
                 onClick={() => router.push('/api/auth/signout')}
                 className="px-4 py-2 text-sm text-white bg-red-500 rounded hover:bg-red-600"
               >
                 Cerrar sesión
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
