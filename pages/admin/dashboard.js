@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Card,
   CardContent,
+  Alert,
 } from '@mui/material';
 import {
   People,
@@ -21,8 +22,8 @@ import {
 import AdminHeader from '@/components/AdminHeader';
 
 export default function Dashboard() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  // const { data: session, status } = useSession();
+  // const router = useRouter();
   const [stats, setStats] = useState({
     totalLeads: 0,
     activeLeads: 0,
@@ -31,12 +32,13 @@ export default function Dashboard() {
     conversionRate: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/auth/signin');
-    }
-  }, [status, router]);
+  // useEffect(() => {
+  //   if (status === 'unauthenticated') {
+  //     router.push('/auth/signin');
+  //   }
+  // }, [status, router]);
 
   useEffect(() => {
     fetchStats();
@@ -45,19 +47,29 @@ export default function Dashboard() {
   const fetchStats = async () => {
     try {
       const response = await fetch('/api/admin/stats');
+      if (!response.ok) throw new Error('Error al obtener estadísticas');
       const data = await response.json();
       setStats(data);
     } catch (error) {
+      setError('No se pudieron cargar las estadísticas');
       console.error('Error fetching stats:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  if (status === 'loading' || loading) {
+  if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Alert severity="error">{error}</Alert>
       </Box>
     );
   }

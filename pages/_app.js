@@ -75,15 +75,15 @@ export default function App({ Component, pageProps: { session, ...pageProps } })
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Head>
-          <link rel="icon" href="/pantom_logo.svg" />
-          <link rel="apple-touch-icon" href="/pantom_logo.svg" />
+      <Head>
+        <link rel="icon" href="/pantom_logo.svg" />
+        <link rel="apple-touch-icon" href="/pantom_logo.svg" />
           <meta name="theme-color" content="#0a0a0a" />
-        </Head>
-        <main className={inter.className}>
-          <Component {...pageProps} />
-          <FloatingContactButton />
-        </main>
+      </Head>
+      <main className={inter.className}>
+        <Component {...pageProps} />
+        <FloatingContactButton />
+      </main>
       </ThemeProvider>
     </SessionProvider>
   );
