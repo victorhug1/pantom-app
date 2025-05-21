@@ -1,13 +1,6 @@
 import Head from 'next/head';
-import { Inter } from "next/font/google";
 import { CheckCircle, Calendar, Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-});
 
 export default function LandingEstrategiaDigital() {
   return (

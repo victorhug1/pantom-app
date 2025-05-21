@@ -1,12 +1,5 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import { Inter } from "next/font/google";
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-});
 
 export default function LandingCampana1({ representante_legal }) {
   return (
@@ -15,7 +8,7 @@ export default function LandingCampana1({ representante_legal }) {
         <title>¿Tu presencia digital está haciendo crecer tu negocio? | Pantom</title>
         <meta name="description" content="Más del 70% de las PyMEs tienen presencia online, pero menos del 10% la usan estratégicamente. Descubre cómo convertir tu ecosistema digital en una herramienta real de ventas." />
       </Head>
-      <div className={`${inter.className} min-h-screen bg-black text-white p-0 m-0 relative`}>
+      <div className={`min-h-screen bg-black text-white p-0 m-0 relative`}>
         {/* Background Image */}
         <div 
           className="absolute inset-0"
