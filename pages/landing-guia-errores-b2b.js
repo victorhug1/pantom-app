@@ -1,14 +1,7 @@
 import Head from 'next/head';
-import { Inter } from "next/font/google";
 import { AlertTriangle, CheckCircle, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-});
 
 export default function LandingGuiaErroresB2B() {
   const router = useRouter();
@@ -79,7 +72,7 @@ export default function LandingGuiaErroresB2B() {
         <title>7 errores silenciosos que frenan tu sitio B2B | Pantom</title>
         <meta name="description" content="Descubre los 7 errores más comunes que frenan el crecimiento de los sitios web B2B y aprende cómo solucionarlos en menos de una semana. Descarga la guía gratis de Pantom." />
       </Head>
-      <div className={`${inter.className} min-h-screen bg-black text-white p-0 m-0 relative`}>
+      <div className={`min-h-screen bg-black text-white p-0 m-0 relative`}>
         {/* Background Hero igual que la landing anterior */}
         <div 
           className="absolute inset-0"
