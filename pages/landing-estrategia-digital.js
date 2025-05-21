@@ -9,7 +9,7 @@ export default function LandingEstrategiaDigital() {
         <title>Tu estrategia digital comienza aquí | Pantom</title>
         <meta name="description" content="En solo 20 minutos te mostramos cómo mejorar tus resultados digitales sin fórmulas mágicas. Soluciones reales, para negocios reales." />
       </Head>
-      <div className={`${inter.className} min-h-screen bg-black text-white p-0 m-0 relative`}>
+      <div className="min-h-screen bg-black text-white p-0 m-0 relative">
         {/* Background con patrón y gradiente */}
         <div 
           className="absolute inset-0"
