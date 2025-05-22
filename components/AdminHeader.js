@@ -9,7 +9,6 @@ import {
   Box,
   Menu,
   MenuItem,
-  Avatar,
 } from '@mui/material';
 import {
   Menu as MenuIcon,
@@ -39,7 +38,11 @@ export default function AdminHeader() {
   };
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar position="fixed" sx={{ 
+      zIndex: (theme) => theme.zIndex.drawer + 1,
+      backgroundColor: '#181818',
+      borderBottom: '1px solid rgba(255, 255, 255, 0.1)'
+    }}>
       <Toolbar>
         <IconButton
           edge="start"
@@ -51,7 +54,7 @@ export default function AdminHeader() {
           <MenuIcon />
         </IconButton>
 
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: 'white' }}>
           Panel Administrativo
         </Typography>
 
@@ -60,6 +63,7 @@ export default function AdminHeader() {
             color="inherit"
             startIcon={<Dashboard />}
             onClick={() => router.push('/admin/dashboard')}
+            sx={{ color: 'white', '&:hover': { backgroundColor: '#ea5a19' } }}
           >
             Dashboard
           </Button>
@@ -67,6 +71,7 @@ export default function AdminHeader() {
             color="inherit"
             startIcon={<People />}
             onClick={() => router.push('/admin/leads')}
+            sx={{ color: 'white', '&:hover': { backgroundColor: '#ea5a19' } }}
           >
             Leads
           </Button>
@@ -74,13 +79,14 @@ export default function AdminHeader() {
             color="inherit"
             startIcon={<Settings />}
             onClick={() => router.push('/admin/settings')}
+            sx={{ color: 'white', '&:hover': { backgroundColor: '#ea5a19' } }}
           >
             Configuración
           </Button>
           <IconButton
             color="inherit"
             onClick={handleLogout}
-            sx={{ ml: 1 }}
+            sx={{ ml: 1, color: 'white', '&:hover': { backgroundColor: '#ea5a19' } }}
           >
             <Logout />
           </IconButton>
@@ -90,6 +96,17 @@ export default function AdminHeader() {
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
           onClose={handleClose}
+          PaperProps={{
+            sx: {
+              backgroundColor: '#181818',
+              color: 'white',
+              '& .MuiMenuItem-root': {
+                '&:hover': {
+                  backgroundColor: '#ea5a19',
+                },
+              },
+            },
+          }}
         >
           <MenuItem onClick={() => { handleClose(); router.push('/admin/dashboard'); }}>
             <Dashboard sx={{ mr: 1 }} /> Dashboard

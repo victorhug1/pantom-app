@@ -1,14 +1,14 @@
 import clientPromise from '../../../lib/mongodb';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]';
+// import { getServerSession } from 'next-auth/next';
+// import { authOptions } from '../auth/[...nextauth]';
 import { ObjectId } from 'mongodb';
 
 export default async function handler(req, res) {
   // Verificar autenticación
-  const session = await getServerSession(req, res, authOptions);
-  if (!session) {
-    return res.status(401).json({ error: 'No autorizado' });
-  }
+  // const session = await getServerSession(req, res, authOptions);
+  // if (!session) {
+  //   return res.status(401).json({ error: 'No autorizado' });
+  // }
 
   const { method } = req;
   const client = await clientPromise;
@@ -17,46 +17,30 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const { page = 1, limit = 10, search = '', state = '', emailState = '' } = req.query;
+        // Ignorar todos los filtros y devolver todos los leads
+        const { page = 1, limit = 10 } = req.query;
         const skip = (parseInt(page) - 1) * parseInt(limit);
-
-        // Construir el filtro de búsqueda
-        let filter = {};
-        if (search) {
-          filter = {
-            $or: [
-              { email: { $regex: search, $options: 'i' } },
-              { name: { $regex: search, $options: 'i' } },
-              { notes: { $regex: search, $options: 'i' } },
-              { empresa: { $regex: search, $options: 'i' } },
-              { representanteLegal: { $regex: search, $options: 'i' } },
-            ],
-          };
-        }
-
-        // Añadir filtros de estado
-        if (state) {
-          filter.state = state;
-        }
-        if (emailState) {
-          filter.emailState = emailState;
-        }
 
         const leads = await db
           .collection('leads')
-          .find(filter)
+          .find({})
           .sort({ createdAt: -1 })
           .skip(skip)
           .limit(parseInt(limit))
           .toArray();
 
-        const total = await db.collection('leads').countDocuments(filter);
+        const total = await db.collection('leads').countDocuments({});
 
         res.status(200).json({
-          leads,
-          total,
-          page: parseInt(page),
-          totalPages: Math.ceil(total / parseInt(limit)),
+          success: true,
+          data: {
+            leads,
+            pagination: {
+              total,
+              page: parseInt(page),
+              totalPages: Math.ceil(total / parseInt(limit)),
+            }
+          }
         });
       } catch (error) {
         console.error('Error fetching leads:', error);
@@ -109,19 +93,8 @@ export default async function handler(req, res) {
       }
       break;
 
-    case 'POST':
-      try {
-        const filter = req.body;
-        const leads = await db.collection('leads').find(filter).toArray();
-        res.status(200).json({ success: true, data: leads });
-      } catch (error) {
-        console.error('Error filtering leads:', error);
-        res.status(500).json({ error: 'Error al filtrar los leads' });
-      }
-      break;
-
     default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST']);
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 } 
