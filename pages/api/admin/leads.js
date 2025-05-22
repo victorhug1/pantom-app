@@ -109,8 +109,19 @@ export default async function handler(req, res) {
       }
       break;
 
+    case 'POST':
+      try {
+        const filter = req.body;
+        const leads = await db.collection('leads').find(filter).toArray();
+        res.status(200).json({ success: true, data: leads });
+      } catch (error) {
+        console.error('Error filtering leads:', error);
+        res.status(500).json({ error: 'Error al filtrar los leads' });
+      }
+      break;
+
     default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
+      res.setHeader('Allow', ['GET', 'PUT', 'DELETE', 'POST']);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 } 

@@ -9,28 +9,66 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Método no permitido' });
   }
+
+  // Verificar que la API key esté configurada
+  if (!process.env.MAILERSEND_API_KEY) {
+    console.error('Error: MAILERSEND_API_KEY no está configurada');
+    return res.status(500).json({ 
+      success: false, 
+      error: 'Error de configuración: MAILERSEND_API_KEY no está configurada' 
+    });
+  }
+
   try {
+    const emailData = {
+      from: { email: 'hola@pantom.net', name: 'Pantom Digital Studio' },
+      to: [{ email: 'digitalstudiopantom@gmail.com', name: 'Pantom Digital Studio' }],
+      subject: EMAIL.subject,
+      html: EMAIL.html
+    };
+
+    console.log('Enviando email con datos:', JSON.stringify(emailData, null, 2));
+
     const response = await fetch('https://api.mailersend.com/v1/email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${process.env.MAILERSEND_API_KEY}`
       },
-      body: JSON.stringify({
-        from: { email: 'hola@pantom.net', name: 'Pantom Digital Studio' },
-        to: [{ email: 'victorhug1@hotmail.com', name: 'Víctor' }],
-        subject: EMAIL.subject,
-        html: EMAIL.html
-      })
+      body: JSON.stringify(emailData)
     });
-    const data = await response.json();
+
+    const responseText = await response.text();
+    console.log('Respuesta de MailerSend:', responseText);
+
+    let data;
+    try {
+      data = JSON.parse(responseText);
+    } catch (jsonErr) {
+      console.error('Error al parsear respuesta JSON:', jsonErr);
+      return res.status(500).json({ 
+        success: false, 
+        status: response.status, 
+        body: responseText 
+      });
+    }
+
     if (!response.ok) {
       console.error('MailerSend error:', data);
-      return res.status(500).json({ success: false, error: data });
+      return res.status(500).json({ 
+        success: false, 
+        error: data,
+        message: 'Error al enviar el email. Por favor, verifica que estás usando una cuenta de MailerSend válida y que la dirección de correo destino está autorizada.'
+      });
     }
+
     return res.status(200).json({ success: true, data });
   } catch (err) {
     console.error('Catch error:', err);
-    return res.status(500).json({ success: false, error: err.message });
+    return res.status(500).json({ 
+      success: false, 
+      error: err.message,
+      message: 'Error interno del servidor al intentar enviar el email'
+    });
   }
 } 
