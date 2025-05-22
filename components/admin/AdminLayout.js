@@ -26,14 +26,14 @@ export default function AdminLayout({ children }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-black">
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
-        <div className="flex items-center justify-between h-16 px-4 border-b">
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#181818] shadow-lg transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out`}>
+        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-800">
           <div className="flex items-center gap-2 mb-8">
-            <span className="text-2xl font-bold text-indigo-700 tracking-tight">Pantom Admin</span>
+            <span className="text-2xl font-bold text-white tracking-tight">Pantom Admin</span>
           </div>
-          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden">
+          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-white">
             ✕
           </button>
         </div>
@@ -42,8 +42,8 @@ export default function AdminLayout({ children }) {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100 ${
-                typeof window !== 'undefined' && window.location.pathname === item.href ? 'bg-gray-100' : ''
+              className={`flex items-center px-4 py-2 text-white hover:bg-[#ea5a19] ${
+                typeof window !== 'undefined' && window.location.pathname === item.href ? 'bg-[#ea5a19]' : ''
               }`}
             >
               <span className="mr-2">{item.icon}</span>
@@ -56,11 +56,11 @@ export default function AdminLayout({ children }) {
       {/* Main content */}
       <div className={`${isSidebarOpen ? 'lg:ml-64' : ''} transition-all duration-300 ease-in-out`}>
         {/* Top bar */}
-        <div className="h-16 bg-white shadow-sm">
+        <div className="h-16 bg-[#181818] shadow-sm border-b border-gray-800">
           <div className="flex items-center justify-between h-full px-4">
             <button
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden"
+              className="lg:hidden text-white"
             >
               ☰
             </button>
@@ -77,7 +77,7 @@ export default function AdminLayout({ children }) {
         </div>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="p-6 text-white">
           {children}
         </main>
       </div>

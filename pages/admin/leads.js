@@ -79,7 +79,7 @@ export default function AdminLeads() {
     emailState: '',
     notes: '',
   });
-  const [stats, setStats] = useState({});
+  const rowsPerPageOptions = [10, 25, 50, 100];
 
   // Cargar leads
   const fetchLeads = async () => {
@@ -88,10 +88,10 @@ export default function AdminLeads() {
       const queryParams = new URLSearchParams({
         page: page + 1,
         limit: rowsPerPage,
-        search: searchTerm,
-        state: filterState,
-        emailState: filterEmailState,
       });
+      if (searchTerm) queryParams.append('search', searchTerm);
+      if (filterState) queryParams.append('state', filterState);
+      if (filterEmailState) queryParams.append('emailState', filterEmailState);
 
       const response = await fetch(`/api/admin/leads?${queryParams}`);
       const data = await response.json();
@@ -102,7 +102,6 @@ export default function AdminLeads() {
 
       setLeads(data.data.leads);
       setTotal(data.data.pagination.total);
-      setStats(data.data.stats);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -228,7 +227,7 @@ export default function AdminLeads() {
       <AdminHeader />
       <Box sx={{ pt: 8, pb: 4 }}>
         <Container maxWidth="xl">
-          <Paper sx={{ p: 3, mb: 3 }}>
+          <Paper sx={{ p: 3, mb: 3, backgroundColor: '#181818', color: 'white' }}>
             <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
               <TextField
                 fullWidth
@@ -239,13 +238,42 @@ export default function AdminLeads() {
                 InputProps={{
                   startAdornment: <SearchIcon sx={{ mr: 1, color: 'text.secondary' }} />,
                 }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    color: 'white',
+                    '& fieldset': {
+                      borderColor: 'rgba(255, 255, 255, 0.23)',
+                    },
+                    '&:hover fieldset': {
+                      borderColor: '#ea5a19',
+                    },
+                    '&.Mui-focused fieldset': {
+                      borderColor: '#ea5a19',
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    color: 'rgba(255, 255, 255, 0.7)',
+                  },
+                }}
               />
               <FormControl sx={{ minWidth: 200 }}>
-                <InputLabel>Estado</InputLabel>
+                <InputLabel sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>Estado</InputLabel>
                 <Select
                   value={filterState}
                   label="Estado"
                   onChange={(e) => setFilterState(e.target.value)}
+                  sx={{
+                    color: 'white',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'rgba(255, 255, 255, 0.23)',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ea5a19',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ea5a19',
+                    },
+                  }}
                 >
                   <MenuItem value="">Todos</MenuItem>
                   {Object.values(LEAD_STATES).map((state) => (
@@ -256,11 +284,23 @@ export default function AdminLeads() {
                 </Select>
               </FormControl>
               <FormControl sx={{ minWidth: 200 }}>
-                <InputLabel>Estado Email</InputLabel>
+                <InputLabel sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>Estado Email</InputLabel>
                 <Select
                   value={filterEmailState}
                   label="Estado Email"
                   onChange={(e) => setFilterEmailState(e.target.value)}
+                  sx={{
+                    color: 'white',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'rgba(255, 255, 255, 0.23)',
+                    },
+                    '&:hover .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ea5a19',
+                    },
+                    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                      borderColor: '#ea5a19',
+                    },
+                  }}
                 >
                   <MenuItem value="">Todos</MenuItem>
                   {Object.values(EMAIL_STATES).map((state) => (
@@ -276,33 +316,37 @@ export default function AdminLeads() {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Email</TableCell>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Estado</TableCell>
-                    <TableCell>Estado Email</TableCell>
-                    <TableCell>Notas</TableCell>
-                    <TableCell>Fecha</TableCell>
-                    <TableCell>Acciones</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Email</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Nombre</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Empresa</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Representante Legal</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Estado</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Estado Email</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Notas</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Fecha</TableCell>
+                    <TableCell sx={{ color: 'white' }}>Acciones</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {loading ? (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">
+                      <TableCell colSpan={9} align="center">
                         <CircularProgress />
                       </TableCell>
                     </TableRow>
                   ) : leads.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">
+                      <TableCell colSpan={9} align="center" sx={{ color: 'white' }}>
                         No hay leads que coincidan con los filtros
                       </TableCell>
                     </TableRow>
                   ) : (
                     leads.map((lead) => (
                       <TableRow key={lead._id}>
-                        <TableCell>{lead.email}</TableCell>
-                        <TableCell>{lead.name}</TableCell>
+                        <TableCell sx={{ color: 'white' }}>{lead.email}</TableCell>
+                        <TableCell sx={{ color: 'white' }}>{lead.name}</TableCell>
+                        <TableCell sx={{ color: 'white' }}>{lead.empresa}</TableCell>
+                        <TableCell sx={{ color: 'white' }}>{lead.representanteLegal}</TableCell>
                         <TableCell>
                           <Chip
                             label={lead.state || LEAD_STATES.PENDING}
@@ -319,26 +363,26 @@ export default function AdminLeads() {
                         </TableCell>
                         <TableCell>
                           <Tooltip title={lead.notes || 'Sin notas'}>
-                            <Typography noWrap sx={{ maxWidth: 200 }}>
+                            <Typography noWrap sx={{ maxWidth: 200, color: 'white' }}>
                               {lead.notes || '-'}
                             </Typography>
                           </Tooltip>
                         </TableCell>
-                        <TableCell>
+                        <TableCell sx={{ color: 'white' }}>
                           {new Date(lead.createdAt).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
                           <IconButton
                             size="small"
                             onClick={() => handleEdit(lead)}
-                            color="primary"
+                            sx={{ color: '#ea5a19' }}
                           >
                             <EditIcon />
                           </IconButton>
                           <IconButton
                             size="small"
                             onClick={() => handleDelete(lead)}
-                            color="error"
+                            sx={{ color: '#ea5a19' }}
                           >
                             <DeleteIcon />
                           </IconButton>
@@ -357,22 +401,53 @@ export default function AdminLeads() {
               onPageChange={handleChangePage}
               rowsPerPage={rowsPerPage}
               onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={rowsPerPageOptions}
+              sx={{
+                color: 'white',
+                '& .MuiTablePagination-select': {
+                  color: 'white',
+                },
+                '& .MuiTablePagination-selectIcon': {
+                  color: 'white',
+                },
+              }}
             />
           </Paper>
         </Container>
       </Box>
 
       {/* Diálogo de edición */}
-      <Dialog open={editDialog} onClose={() => setEditDialog(false)}>
+      <Dialog 
+        open={editDialog} 
+        onClose={() => setEditDialog(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: '#181818',
+            color: 'white',
+          },
+        }}
+      >
         <DialogTitle>Editar Lead</DialogTitle>
         <DialogContent>
           <Box sx={{ pt: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
             <FormControl fullWidth>
-              <InputLabel>Estado</InputLabel>
+              <InputLabel sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>Estado</InputLabel>
               <Select
                 value={editForm.state}
                 label="Estado"
                 onChange={(e) => setEditForm({ ...editForm, state: e.target.value })}
+                sx={{
+                  color: 'white',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'rgba(255, 255, 255, 0.23)',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ea5a19',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ea5a19',
+                  },
+                }}
               >
                 {Object.values(LEAD_STATES).map((state) => (
                   <MenuItem key={state} value={state}>
@@ -382,11 +457,23 @@ export default function AdminLeads() {
               </Select>
             </FormControl>
             <FormControl fullWidth>
-              <InputLabel>Estado Email</InputLabel>
+              <InputLabel sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>Estado Email</InputLabel>
               <Select
                 value={editForm.emailState}
                 label="Estado Email"
                 onChange={(e) => setEditForm({ ...editForm, emailState: e.target.value })}
+                sx={{
+                  color: 'white',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'rgba(255, 255, 255, 0.23)',
+                  },
+                  '&:hover .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ea5a19',
+                  },
+                  '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                    borderColor: '#ea5a19',
+                  },
+                }}
               >
                 {Object.values(EMAIL_STATES).map((state) => (
                   <MenuItem key={state} value={state}>
@@ -402,28 +489,82 @@ export default function AdminLeads() {
               rows={4}
               value={editForm.notes}
               onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  color: 'white',
+                  '& fieldset': {
+                    borderColor: 'rgba(255, 255, 255, 0.23)',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#ea5a19',
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#ea5a19',
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: 'rgba(255, 255, 255, 0.7)',
+                },
+              }}
             />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setEditDialog(false)}>Cancelar</Button>
-          <Button onClick={handleEditSubmit} variant="contained">
+          <Button 
+            onClick={() => setEditDialog(false)}
+            sx={{ color: 'white' }}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            onClick={handleEditSubmit} 
+            variant="contained"
+            sx={{ 
+              backgroundColor: '#ea5a19',
+              '&:hover': {
+                backgroundColor: '#d44d0f',
+              },
+            }}
+          >
             Guardar
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Diálogo de eliminación */}
-      <Dialog open={deleteDialog} onClose={() => setDeleteDialog(false)}>
+      <Dialog 
+        open={deleteDialog} 
+        onClose={() => setDeleteDialog(false)}
+        PaperProps={{
+          sx: {
+            backgroundColor: '#181818',
+            color: 'white',
+          },
+        }}
+      >
         <DialogTitle>Confirmar eliminación</DialogTitle>
         <DialogContent>
-          <Typography>
+          <Typography sx={{ color: 'white' }}>
             ¿Estás seguro de que deseas eliminar este lead? Esta acción no se puede deshacer.
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeleteDialog(false)}>Cancelar</Button>
-          <Button onClick={handleDeleteConfirm} color="error" variant="contained">
+          <Button 
+            onClick={() => setDeleteDialog(false)}
+            sx={{ color: 'white' }}
+          >
+            Cancelar
+          </Button>
+          <Button 
+            onClick={handleDeleteConfirm} 
+            variant="contained"
+            sx={{ 
+              backgroundColor: '#ea5a19',
+              '&:hover': {
+                backgroundColor: '#d44d0f',
+              },
+            }}
+          >
             Eliminar
           </Button>
         </DialogActions>

@@ -12,20 +12,7 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // DESACTIVAR AUTENTICACIÓN EN DESARROLLO
-        if (process.env.NODE_ENV === 'development') {
-          if (credentials.username === 'pantom' && credentials.password === '12345') {
-            return {
-              id: 1,
-              name: 'Admin',
-              email: 'admin@pantom.net'
-            };
-          }
-          return null;
-        }
-        // --- AUTENTICACIÓN NORMAL ---
-        if (credentials.username === process.env.ADMIN_USERNAME && 
-            credentials.password === process.env.ADMIN_PASSWORD) {
+        if (credentials.username === process.env.ADMIN_USERNAME && credentials.password === process.env.ADMIN_PASSWORD) {
           return {
             id: 1,
             name: 'Admin',
