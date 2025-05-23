@@ -16,14 +16,13 @@ import {
   People,
   Email,
   CheckCircle,
-  Cancel,
   TrendingUp,
 } from '@mui/icons-material';
 import AdminHeader from '@/components/AdminHeader';
 
 export default function Dashboard() {
-  // const { data: session, status } = useSession();
-  // const router = useRouter();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [stats, setStats] = useState({
     totalLeads: 0,
     activeLeads: 0,
@@ -34,15 +33,17 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // useEffect(() => {
-  //   if (status === 'unauthenticated') {
-  //     router.push('/auth/signin');
-  //   }
-  // }, [status, router]);
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
 
   useEffect(() => {
-    fetchStats();
-  }, []);
+    if (status === 'authenticated') {
+      fetchStats();
+    }
+  }, [status]);
 
   const fetchStats = async () => {
     try {
@@ -58,7 +59,7 @@ export default function Dashboard() {
     }
   };
 
-  if (loading) {
+  if (status === 'loading' || loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
         <CircularProgress />
