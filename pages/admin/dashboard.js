@@ -41,7 +41,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      fetchStats();
+    fetchStats();
     }
   }, [status]);
 

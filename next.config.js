@@ -40,6 +40,15 @@ const nextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog/slots/:slug*',
+        destination: '/404',
+        permanent: false,
+      },
+    ];
+  },
   env: {
     MAILERSEND_API_KEY: 'mlsn.f4b3dab0872b733e9d404cdd0e12093cee5cc380a7601ee4896b769826210edc',
     MAILERSEND_FROM_EMAIL: 'hola@pantom.net',
