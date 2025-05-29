@@ -11,10 +11,11 @@ async function testEmailSend() {
       segmento: 'Prueba'
     };
 
-    const response = await fetch('http://192.168.1.139:3001/api/send-email', {
+    const response = await fetch('http://localhost:3000/api/send-daily-email', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'x-cron-secret': process.env.FUNNEL_CRON_TOKEN
       },
       body: JSON.stringify({
         leads: [testLead]
