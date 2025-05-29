@@ -24,16 +24,14 @@ export default function LandingGuiaErroresB2B() {
         sitioWeb = 'https://' + sitioWeb;
       }
       // 1. Guardar lead en la DB
-      const resLead = await fetch('/api/leads', {
+      const resLead = await fetch('/api/landing-leads', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: form.nombre,
           email: form.email,
-          segmento: 'guia_errores_b2b',
-          fuente: 'landing',
-          notas: form.auditoria ? 'Solicita auditoría gratuita' : '',
           sitioWeb,
+          auditoria: form.auditoria
         })
       });
       if (!resLead.ok) {
