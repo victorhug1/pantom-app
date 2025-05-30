@@ -1,5 +1,3 @@
 User-agent: *
-Allow: /
-Disallow: /blog/slots/
- 
+
 Sitemap: https://pantom.net/api/sitemap.xml 
