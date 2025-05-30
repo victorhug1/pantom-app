@@ -35,8 +35,15 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: '/blog/:slug',
-        destination: '/blog/[slug]',
+        source: '/blog/:slug*',
+        destination: '/404',
+        has: [
+          {
+            type: 'query',
+            key: 'slug',
+            value: '(?!categoria|post).*',
+          },
+        ],
       },
     ];
   },
