@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Traefik
+/traefik/certs/acme.json
+
+# n8n settings and data
+/n8n
