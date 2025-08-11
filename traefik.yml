@@ -14,7 +14,7 @@ providers:
 certificatesResolvers:
   letsencrypt:
     acme:
-      email: tu-email@pantom.net
+      email: victorhug1@gmail.com
       storage: /letsencrypt/acme.json
       httpChallenge:
         entryPoint: web

@@ -1,11 +1,11 @@
-version: '3.9'
-
+# Nota: elimina la clave "version", ya no se usa en Compose v2
 services:
   traefik:
     image: traefik:v2.11
     command:
       - "--api.dashboard=true"
       - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
       - "--entrypoints.websecure.address=:443"
       - "--certificatesresolvers.letsencrypt.acme.email=victorhug1@gmail.com"
@@ -15,40 +15,61 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/etc/traefik/traefik.yml:ro
       - ./traefik/certs:/letsencrypt
+    labels:
+      - "traefik.enable=true"
+      # Redirección HTTP -> HTTPS para dominios del stack (opcional pero recomendado)
+      - "traefik.http.routers.redirect-web.rule=Host(`pantom.net`) || Host(`www.pantom.net`) || Host(`n8n.pantom.net`)"
+      - "traefik.http.routers.redirect-web.entrypoints=web"
+      - "traefik.http.routers.redirect-web.middlewares=redirect-to-https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
     restart: always
+    networks:
+      - proxy
 
   pantom:
-    image: node:18
+    image: node:18-alpine
     working_dir: /app
-    command: sh -c "npm install && npm run build && npm run start"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    command: sh -lc "npm ci --omit=dev && npm run build && npm run start"
     volumes:
       - .:/app
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pantom.rule=Host(`pantom.net`)"
+      - "traefik.docker.network=proxy"
+      # Router para pantom.net y www
+      - "traefik.http.routers.pantom.rule=Host(`pantom.net`) || Host(`www.pantom.net`)"
       - "traefik.http.routers.pantom.entrypoints=websecure"
       - "traefik.http.routers.pantom.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.pantomwww.rule=Host(`www.pantom.net`)"
-      - "traefik.http.routers.pantomwww.entrypoints=websecure"
-      - "traefik.http.routers.pantomwww.tls.certresolver=letsencrypt"
+      # Servicio/puerto interno de Next.js
       - "traefik.http.services.pantom.loadbalancer.server.port=3000"
     restart: always
+    networks:
+      - proxy
 
   n8n:
     image: n8nio/n8n
     container_name: n8n
     restart: always
     environment:
-      - N8N_HOST=n8n.pantom.net
-      - N8N_PORT=5678
-      - N8N_PROTOCOL=https
       - NODE_ENV=production
-      - WEBHOOK_TUNNEL_URL=https://n8n.pantom.net
+      - TZ=America/Bogota
+
+      # URL públicas
+      - N8N_HOST=n8n.pantom.net
+      - N8N_PROTOCOL=https
+      - N8N_PORT=5678
+      - WEBHOOK_URL=https://n8n.pantom.net
+      - N8N_WEBHOOK_URL=https://n8n.pantom.net
+      - N8N_EDITOR_BASE_URL=https://n8n.pantom.net
+
     labels:
       - "traefik.enable=true"
+      - "traefik.docker.network=proxy"
       - "traefik.http.routers.n8n.rule=Host(`n8n.pantom.net`)"
       - "traefik.http.routers.n8n.entrypoints=websecure"
       - "traefik.http.routers.n8n.tls=true"
@@ -56,8 +77,9 @@ services:
       - "traefik.http.services.n8n.loadbalancer.server.port=5678"
     volumes:
       - ./n8n:/home/node/.n8n
+    networks:
+      - proxy
 
 networks:
-  default:
-    external:
-      name: web
+  proxy:
+    external: true
