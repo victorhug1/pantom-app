@@ -1,0 +1,41 @@
+cat > .gitignore <<'EOF'
+# Next.js build
+.next/
+out/
+dist/
+coverage/
+*.log
+logs/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Env & secrets
+.env
+.env.*
+!.env.example
+~/.secrets/
+credenciales.json
+leads.json
+leads_cleaned.csv
+logs_result.json
+auditoria.js
+backup_*.tar.gz
+
+# Python virtualenv
+venv/
+
+# Docker / Traefik / N8N runtime data
+traefik/certs/
+letsencrypt/
+n8n/
+docker-data/
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.code-workspace
+EOF

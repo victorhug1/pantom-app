@@ -1,0 +1,11 @@
+# Browsers that we support - Modern browsers only
+
+> 2%
+last 2 versions
+not dead
+not ie 11
+not op_mini all
+not chrome < 90
+not firefox < 88
+not safari < 14
+not edge < 90

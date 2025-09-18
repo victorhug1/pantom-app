@@ -1,0 +1,134 @@
+{
+  "name": "LinkedIn Scraper Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "command": "source /var/www/pantom.net/venv/bin/activate && python /var/www/pantom.net/linkedin_scraper.py",
+        "workingDirectory": "/var/www/pantom.net",
+        "environmentVariables": {
+          "USE_SAMPLE_DATA": "false"
+        }
+      },
+      "id": "linkedin-scraper",
+      "name": "Execute LinkedIn Scraper",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar los datos del scraper\nconst data = $input.all()[0].json;\n\n// Filtrar por cargo específico\nconst ceos = data.filter(item => item.cargo === 'ceo');\nconst founders = data.filter(item => item.cargo === 'founder');\n\n// Agregar timestamp\nconst processedData = data.map(item => ({\n  ...item,\n  timestamp: new Date().toISOString(),\n  processed: true\n}));\n\nreturn {\n  json: {\n    total_results: data.length,\n    ceos_count: ceos.length,\n    founders_count: founders.count,\n    all_data: processedData\n  }\n};"
+      },
+      "id": "process-data",
+      "name": "Process Data",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition1",
+              "leftValue": "={{ $json.total_results }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "check-results",
+      "name": "Check Results",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "save-to-database",
+      "name": "Save to Database",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.4,
+      "position": [900, 200]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "send-email",
+      "name": "Send Email Report",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [900, 400]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "log-results",
+      "name": "Log Results",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [680, 500]
+    }
+  ],
+  "connections": {
+    "Execute LinkedIn Scraper": {
+      "main": [
+        [
+          {
+            "node": "Process Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Data": {
+      "main": [
+        [
+          {
+            "node": "Check Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Results": {
+      "main": [
+        [
+          {
+            "node": "Save to Database",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1"
+}

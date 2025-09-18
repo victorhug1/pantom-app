@@ -1,0 +1,82 @@
+[
+  {
+    "url": "https://www.pantom.net/blog/seo-2025-estrategias-clave",
+    "priority": 0.7,
+    "title": "SEO en 2025: Estrategias Clave",
+    "date": "2024-06-10"
+  },
+  {
+    "url": "https://www.pantom.net/blog/bases-datos-medida-2025",
+    "priority": 0.7,
+    "title": "Bases de Datos a Medida 2025",
+    "date": "2024-06-10"
+  },
+  {
+    Crea el archivo en la raíz de tu proyecto:
+
+    module.exports = {
+      apps: [
+        {
+          name: "pantom",             // Nombre de tu app en PM2
+          script: "npm",              // Usamos npm para arrancar
+          args: "start",              // Comando: npm start
+          instances: 1,               // Número de instancias (puedes poner "max" si quieres clúster)
+          autorestart: true,          // Reinicia si se cae
+          watch: false,               // No observes cambios en producción
+          max_memory_restart: "500M", // Reinicia si pasa de 500 MB de RAM
+          env: {
+            NODE_ENV: "production",
+            PORT: 3000                // Puerto donde corre Next.js
+          },
+          error_file: "./logs/pantom-error.log", // Logs de errores
+          out_file: "./logs/pantom-out.log",     // Logs de salida
+          log_date_format: "YYYY-MM-DD HH:mm:ss"
+        }
+      ]
+    };
+    
+    🚀 Pasos para usarlo
+    
+    Crea carpeta de logs para que no falle:
+    
+    mkdir logs
+    
+    
+    Arranca tu app con:
+    
+    pm2 start ecosystem.config.js
+    
+    
+    Comprueba el estado:
+    
+    pm2 status
+    
+    
+    Mira los logs en tiempo real:
+    
+    pm2 logs pantom
+    
+    
+    Guarda configuración para que arranque en reinicios del servidor:
+    
+    pm2 startup
+    pm2 save
+    
+    📌 Resultado esperado
+    
+    Tu app pantom estará corriendo en http://IP:3000.
+    
+    PM2 la reiniciará si se cae.
+    
+    Logs estarán en:
+    
+    logs/pantom-error.log
+    
+    logs/pantom-out.log
+    
+    "url": "https://www.pantom.net/blog/nextjs-2025-velocidad-seo-experiencia",
+    "priority": 0.7,
+    "title": "Next.js en 2025: Velocidad, SEO y Experiencia",
+    "date": "2024-06-10"
+  }
+]

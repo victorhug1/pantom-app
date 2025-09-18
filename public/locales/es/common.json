@@ -1,0 +1,17 @@
+{
+  "nav": {
+    "services": "Servicios",
+    "approach": "Enfoque",
+    "success": "Casos de Éxito",
+    "blog": "Blog",
+    "about": "Nosotros",
+    "contact": "Contacto",
+    "schedule": "Agendar Consulta"
+  },
+  "hero": {
+    "title": "Estudio Digital Especializado en Desarrollo Web y Soluciones de Datos a Medida",
+    "subtitle": "Creamos soluciones digitales a medida: desde bases de datos optimizadas y aplicaciones web intuitivas hasta estrategias SEO que impulsan tu crecimiento.",
+    "cta": "Agendar Consulta Estratégica",
+    "learnMore": "Ver Nuestros Servicios"
+  }
+} 

@@ -1,0 +1,17 @@
+{
+  "name": "Pantom",
+  "short_name": "Pantom",
+  "description": "Pantom - Tu asistente de compras",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ff9800",
+  "icons": [
+    {
+      "src": "/pantom_logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+} 
