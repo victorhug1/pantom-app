@@ -2,14 +2,20 @@ import Head from "next/head";
 import Layout from "../components/Layout";
 import Hero from "../components/Hero";
 import Introduction from "../components/Introduction";
-import SuccessCases from "../components/SuccessCases";
+import dynamic from "next/dynamic";
+const SuccessCases = dynamic(() => import("../components/SuccessCases"), {
+  ssr: false,
+  loading: () => <div className="h-28 opacity-50" />,
+});
 import Process from '../components/Process';
-import BlogSection from '../components/BlogSection';
+const BlogSection = dynamic(() => import('../components/BlogSection'), {
+  ssr: false,
+  loading: () => <div className="h-40 opacity-50" />,
+});
 import FinalCTA from '../components/FinalCTA';
 import { motion } from "framer-motion";
 import SEO from '@/components/SEO';
 import { useRouter } from 'next/router';
-import dynamic from "next/dynamic";
 import NewsletterForm from '../components/NewsletterForm';
 
 const ParticlesBackgroundServicios = dynamic(

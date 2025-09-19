@@ -1,57 +1,65 @@
-import { useEffect } from 'react';
+import Script from 'next/script';
+
+const ENABLE_GTM = process.env.NEXT_PUBLIC_ENABLE_GTM === 'true';
+const ENABLE_GTAG = process.env.NEXT_PUBLIC_ENABLE_GTAG === 'true';
+const ENABLE_HOTJAR = process.env.NEXT_PUBLIC_ENABLE_HOTJAR === 'true';
+const ENABLE_CS = process.env.NEXT_PUBLIC_ENABLE_CONTENTSQUARE === 'true';
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID;
+const GA4_ID = process.env.NEXT_PUBLIC_GA4_ID;
+const HOTJAR_ID = process.env.NEXT_PUBLIC_HOTJAR_ID;
+const CS_SITEID = process.env.NEXT_PUBLIC_CS_SITEID;
 
 export default function Analytics() {
-  useEffect(() => {
-    // Cargar scripts después de que la página esté lista
-    const loadScripts = () => {
-      // Google Tag Manager - diferido
-      if (!window.gtag) {
-        const gtmScript = document.createElement('script');
-        gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-MN7GS3TZ';
-        gtmScript.async = true;
-        gtmScript.defer = true;
-        document.head.appendChild(gtmScript);
-      }
+  return (
+    <>
+      {ENABLE_GTM && GTM_ID && (
+        <Script
+          id="gtm"
+          src={`https://www.googletagmanager.com/gtm.js?id=${GTM_ID}`}
+          strategy="lazyOnload"
+        />
+      )}
 
-      // ContentSquare - diferido (solo si es necesario)
-      if (window.location.hostname === 'pantom.net' && !window._uxa) {
-        const csScript = document.createElement('script');
-        csScript.src = 'https://t.contentsquare.net/uxa/270796.js';
-        csScript.async = true;
-        csScript.defer = true;
-        document.head.appendChild(csScript);
-      }
+      {ENABLE_GTAG && GA4_ID && (
+        <>
+          <Script
+            id="gtag-src"
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA4_ID}`}
+            strategy="lazyOnload"
+          />
+          <Script id="gtag-init" strategy="lazyOnload">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);} 
+              gtag('js', new Date());
+              gtag('config', '${GA4_ID}', { send_page_view: false });
+            `}
+          </Script>
+        </>
+      )}
 
-      // Hotjar - diferido
-      if (!window.hj) {
-        const hjScript = document.createElement('script');
-        hjScript.src = 'https://static.hotjar.com/c/hotjar-6405051.js?sv=6';
-        hjScript.async = true;
-        hjScript.defer = true;
-        document.head.appendChild(hjScript);
-      }
-    };
+      {ENABLE_HOTJAR && HOTJAR_ID && (
+        <Script id="hotjar" strategy="lazyOnload">
+          {`
+            (function(h,o,t,j,a,r){
+              h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+              h._hjSettings={hjid:${HOTJAR_ID},hjsv:6};
+              a=o.getElementsByTagName('head')[0];
+              r=o.createElement('script');r.async=1;
+              r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
+              a.appendChild(r);
+            })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+          `}
+        </Script>
+      )}
 
-    // Cargar después de 2 segundos o cuando el usuario interactúe
-    const timer = setTimeout(loadScripts, 2000);
-    
-    const loadOnInteraction = () => {
-      clearTimeout(timer);
-      loadScripts();
-    };
-
-    // Cargar en la primera interacción del usuario
-    ['mousedown', 'touchstart', 'keydown', 'scroll'].forEach(event => {
-      document.addEventListener(event, loadOnInteraction, { once: true });
-    });
-
-    return () => {
-      clearTimeout(timer);
-      ['mousedown', 'touchstart', 'keydown', 'scroll'].forEach(event => {
-        document.removeEventListener(event, loadOnInteraction);
-      });
-    };
-  }, []);
-
-  return null;
+      {ENABLE_CS && CS_SITEID && (
+        <Script
+          id="contentsquare"
+          src={`https://t.contentsquare.net/uxa/${CS_SITEID}.js`}
+          strategy="lazyOnload"
+        />
+      )}
+    </>
+  );
 }

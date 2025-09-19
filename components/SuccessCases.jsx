@@ -43,7 +43,7 @@ export default function SuccessCases() {
           </h2>
         </motion.div>
 
-        <div className="relative">
+        <div className="relative" style={{ willChange: 'transform' }}>
           <Swiper
             modules={[Autoplay]}
             spaceBetween={30}

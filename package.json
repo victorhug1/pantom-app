@@ -44,6 +44,7 @@
     "swiper": "^11.0.6"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^15.5.3",
     "@types/node": "20.19.10",
     "@types/react": "^18.2.55",
     "@types/react-dom": "^18.2.19",

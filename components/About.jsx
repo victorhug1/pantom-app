@@ -9,6 +9,7 @@ export default function About() {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
+          style={{ willChange: 'opacity, transform' }}
         >
           <h2 className="text-3xl md:text-5xl font-bold text-primary mb-6">
             Sobre Nosotros
@@ -26,6 +27,7 @@ export default function About() {
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
+          style={{ willChange: 'opacity, transform' }}
         >
           <img
             src="/about-illustration.svg"

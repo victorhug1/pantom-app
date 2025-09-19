@@ -97,6 +97,7 @@ export default function BlogSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           className="relative"
+          style={{ willChange: 'opacity, transform' }}
         >
           <Swiper
             modules={[Navigation, Pagination]}

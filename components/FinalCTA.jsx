@@ -44,6 +44,7 @@ export default function FinalCTA() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
+            style={{ willChange: 'opacity, transform' }}
           >
             <motion.h2
               variants={itemVariants}
@@ -77,6 +78,7 @@ export default function FinalCTA() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
             className="bg-[#1a1a1a]/50 border border-white/10 rounded-2xl p-8 backdrop-blur-sm"
+            style={{ willChange: 'opacity, transform' }}
           >
             <motion.div
               variants={itemVariants}
