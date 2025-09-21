@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function SEO({ 
   title = 'Pantom Digital Studio | Transformación Digital y Marketing',
@@ -15,8 +16,16 @@ export default function SEO({
   locale = 'es_ES',
   alternateLocales = ['en_US'],
   robots = 'index, follow',
-  structuredData
+  structuredData,
+  forceCanonical = false // Para forzar canonical duro (ej. en /contacto con parámetros)
 }) {
+  const router = useRouter();
+  const hasParams = router?.asPath?.includes('?');
+  
+  // Si forceCanonical es true y hay parámetros, usar canonical duro
+  const finalCanonicalUrl = (forceCanonical && hasParams) 
+    ? canonicalUrl.replace(/\?.*$/, '') // Quitar parámetros del canonical
+    : canonicalUrl;
   return (
     <Head>
       {/* Basic Meta Tags */}
@@ -27,7 +36,7 @@ export default function SEO({
       <meta name="robots" content={robots} />
       
       {/* Canonical URL */}
-      <link rel="canonical" href={canonicalUrl} />
+      <link rel="canonical" href={finalCanonicalUrl} />
       
       {/* Language Alternates */}
       {alternateLocales.map((locale) => (

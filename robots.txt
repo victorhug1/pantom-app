@@ -1,5 +1,13 @@
 User-agent: *
 Allow: /
 Disallow: /blog/slots/
+
+# Bloqueo de parámetros de tracking
+Disallow: /*?*utm_
+Disallow: /*?*gclid=
+Disallow: /*?*fbclid=
+Disallow: /*?*ref=
+Disallow: /*?*source=
+Disallow: /*?*session=
  
 Sitemap: https://pantom.net/sitemap.xml

@@ -29,7 +29,7 @@ const clients = [
 
 export default function SuccessCases() {
   return (
-    <section className="py-10 bg-[#0a0a0a]">
+    <section id="casos" className="py-10 bg-[#0a0a0a]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

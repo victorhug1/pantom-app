@@ -2,18 +2,17 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
 import { Code, Server, Layers, ShoppingCart, Smartphone, Wrench, CheckCircle, Star } from "lucide-react";
 
 export default function DesarrolloWeb() {
   return (
     <Layout>
-      <Head>
-        <title>Desarrollo web a medida con Next.js y React | Pantom Colombia</title>
-        <meta
-          name="description"
-          content="Desarrollo web personalizado en Colombia: aplicaciones rápidas, escalables y optimizadas con Next.js, React y Node.js. ¡Impulsa tu presencia digital con Pantom!"
-        />
-      </Head>
+      <SEO
+        title="Desarrollo Web a Medida | Next.js y React | Pantom"
+        description="Aplicaciones web rápidas y escalables con Next.js, React y Node.js. Desarrollo personalizado en Colombia."
+        canonicalUrl="https://pantom.net/servicios/desarrollo-web"
+      />
       <div className="relative min-h-screen pb-16 bg-[#0a0a0a] overflow-hidden">
         {/* Fondo con destellos/acento naranja */}
         <div aria-hidden="true" className="pointer-events-none select-none">
@@ -33,7 +32,7 @@ export default function DesarrolloWeb() {
           </section>
           <div className="flex justify-center mb-8">
             <Image
-              src="/images/services/Desarrollo web a medida aplicaciones rápidas y escalables.png"
+              src="/images/services/desarrollo-web-a-medida-aplicaciones-rapidas-y-escalables.png"
               alt="Desarrollo web a medida aplicaciones rápidas y escalables"
               className="w-full max-w-2xl rounded-xl shadow-lg"
               width={1200}

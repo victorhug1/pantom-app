@@ -6,6 +6,9 @@ import { Calendar, User, Tag, Clock, Share2, ArrowRight } from "lucide-react";
 import { FaLinkedin, FaXTwitter, FaFacebook, FaWhatsapp } from "react-icons/fa6";
 import { useRouter } from "next/router";
 import Error from "next/error";
+import SEO from "@/components/SEO";
+import BreadcrumbsJsonLd from "@/components/SEO/BreadcrumbsJsonLd";
+import ArticleJsonLd from "@/components/SEO/ArticleJsonLd";
 
 // Array de posts mock (igual que en blog.jsx)
 const mockPosts = [
@@ -15,14 +18,14 @@ const mockPosts = [
     author: {
       name: "Víctor Hugo",
       url: "https://www.linkedin.com/in/victorhug1/",
-      avatar: "/images/vito vito.jpg",
+      avatar: "/images/vito-vito.jpg",
       bio: "Fundador de Pantom. Apasionado por la tecnología, la estrategia y el desarrollo de soluciones digitales que generan impacto real."
     },
     date: "2024-06-10",
     updated: "2024-06-10",
     category: "SEO",
     tags: ["SEO 2025", "E-E-A-T", "IA", "Tendencias"],
-    image: "/images/blog/seo/tendencias-en-desarrollo web-para.webp",
+    image: "/images/blog/seo/tendencias-en-desarrollo-web-para.webp",
     excerpt: "Descubre las tendencias SEO más importantes para 2025, cómo la IA, E-E-A-T y la experiencia de usuario transforman el posicionamiento web en Colombia.",
     content: `
       <h2>La Experiencia del Usuario (UX) Sigue Reinando (¡y con más fuerza!)</h2>
@@ -69,7 +72,7 @@ const mockPosts = [
     author: {
       name: "Víctor Hugo",
       url: "https://www.linkedin.com/in/victorhug1/",
-      avatar: "/images/vito vito.jpg",
+      avatar: "/images/vito-vito.jpg",
       bio: "Fundador de Pantom. Apasionado por la tecnología, la estrategia y el desarrollo de soluciones digitales que generan impacto real."
     },
     date: "2024-06-11",
@@ -87,7 +90,7 @@ const mockPosts = [
     author: {
       name: "Víctor Hugo",
       url: "https://www.linkedin.com/in/victorhug1/",
-      avatar: "/images/vito vito.jpg",
+      avatar: "/images/vito-vito.jpg",
       bio: "Fundador de Pantom. Apasionado por la tecnología, la estrategia y el desarrollo de soluciones digitales que generan impacto real."
     },
     date: "2024-06-12",
@@ -196,25 +199,28 @@ export default function BlogPost() {
     },
     {
       name: "WhatsApp",
-      url: `https://wa.me/?text=${shareText}%20${encodeURIComponent(shareUrl)}`,
+      url: `https://wa.me/?text=${shareText}-${encodeURIComponent(shareUrl)}`,
       icon: <FaWhatsapp className="w-7 h-7" />
     }
   ];
 
   return (
     <Layout>
-      <Head>
-        <title>{post.title} | Blog Pantom</title>
-        <meta name="description" content={post.excerpt} />
-        <meta property="og:title" content={post.title + ' | Blog Pantom'} />
-        <meta property="og:description" content={post.excerpt} />
-        <meta property="og:image" content={post.image} />
-        <meta property="og:url" content={shareUrl} />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title + ' | Blog Pantom'} />
-        <meta name="twitter:description" content={post.excerpt} />
-        <meta name="twitter:image" content={post.image} />
-      </Head>
+      <BreadcrumbsJsonLd items={[
+        { name: 'Inicio', url: '/' },
+        { name: 'Blog', url: '/blog' },
+        { name: post.title, url: `/blog/${post.slug}` },
+      ]} />
+      <ArticleJsonLd post={post} />
+      <SEO
+        title={`${post.title} | Blog Pantom`}
+        description={post.excerpt}
+        canonicalUrl={shareUrl}
+        type="article"
+        article={true}
+        publishedTime={post.date}
+        modifiedTime={post.updated}
+      />
       <main className="bg-[#0a0a0a] min-h-screen pb-16">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-12 px-4 pt-16 pb-8">
           {/* Contenido principal */}

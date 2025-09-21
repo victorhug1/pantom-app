@@ -44,7 +44,7 @@ export default function BasesDeDatos() {
 
             <div className="flex justify-center mb-8">
               <Image
-                src="/images/services/Bases de datos a medida transforma tus datos en activos estratégicos.png"
+                src="/images/services/bases-de-datos-a-medida-transforma-tus-datos-en-activos-estrategicos.png"
                 alt="Diagrama abstracto de flujo de datos y optimización de bases de datos por Pantom"
                 className="w-full max-w-2xl rounded-xl shadow-lg"
                 width={1200}

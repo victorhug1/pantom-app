@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 import SEO from '@/components/SEO';
 import { useRouter } from 'next/router';
 import NewsletterForm from '../components/NewsletterForm';
+import OrganizationJsonLd from '@/components/SEO/OrganizationJsonLd';
 
 const ParticlesBackgroundServicios = dynamic(
   () => import("@/components/ParticlesBackgroundServicios"),
@@ -50,23 +51,19 @@ export default function Home() {
 
   return (
     <>
+      <OrganizationJsonLd />
       <SEO
-        title="Pantom Digital Studio | Transformación Digital y Marketing"
-        description="Somos un estudio digital especializado en transformación digital, marketing y desarrollo web. Ayudamos a empresas a crecer en el mundo digital."
+        title="Pantom Digital Studio | Desarrollo Web, Datos y SEO en Colombia"
+        description="Soluciones digitales a medida: desarrollo web con Next.js, bases de datos y estrategias SEO que impulsan tu crecimiento."
         ogImage="/og-image.jpg"
-        ogUrl="https://pantom.digital"
+        ogUrl="https://pantom.net"
         canonicalUrl="https://pantom.net"
         type="website"
         locale={locale === 'es' ? 'es_ES' : 'en_US'}
         alternateLocales={locale === 'es' ? ['en_US'] : ['es_ES']}
         structuredData={structuredData}
       />
-    <Layout>
-      <Head>
-        <title>Pantom Digital Studio</title>
-        <meta name="description" content="Estudio digital especializado en SEO, marketing digital y desarrollo web. Elevamos tu marca en el entorno online." />
-        <link rel="icon" href="/pantom_logo.svg" />
-      </Head> 
+    <Layout> 
       <div className="relative min-h-screen">
         <ParticlesBackgroundServicios />
         <Hero />

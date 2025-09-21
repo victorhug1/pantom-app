@@ -45,7 +45,7 @@ export default function EstrategiaDigital() {
             </p>
             <div className="flex justify-center mb-8">
               <Image
-                src="/images/services/Estrategia digital.png"
+                src="/images/services/estrategia-digital.png"
                 alt="Ilustración de hoja de ruta estratégica digital creada por Pantom"
                 className="w-full max-w-2xl rounded-xl shadow-lg"
                 width={1200}

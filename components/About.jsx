@@ -29,11 +29,9 @@ export default function About() {
           viewport={{ once: true }}
           style={{ willChange: 'opacity, transform' }}
         >
-          <img
-            src="/about-illustration.svg"
-            alt="Equipo Pantom trabajando"
-            className="w-full h-auto rounded-2xl shadow-lg"
-          />
+          <div className="w-full h-64 bg-gradient-to-br from-[#ea5a19] to-[#ff8f59] rounded-2xl shadow-lg flex items-center justify-center">
+            <span className="text-white text-2xl font-bold">Pantom Team</span>
+          </div>
         </motion.div>
       </div>
     </section>

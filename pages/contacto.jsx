@@ -2,8 +2,13 @@ import Layout from '@/components/Layout';
 import SEO from '@/components/SEO';
 import ContactForm from '@/components/ContactForm';
 import NewsletterForm from '@/components/NewsletterForm';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export default function Contacto() {
+  const { asPath } = useRouter();
+  const hasParams = asPath.includes('?');
+  
   const title = 'Contacto';
   const description = 'Hablemos sobre tus objetivos. Responderemos en menos de 24 horas.';
   const url = 'https://pantom.net/contacto';
@@ -30,6 +35,7 @@ export default function Contacto() {
         canonicalUrl={url}
         type="website"
         structuredData={structuredData}
+        forceCanonical={true}
       />
       <section className="py-16 px-6 max-w-4xl mx-auto">
         <h1 className="text-3xl md:text-5xl font-bold text-primary mb-6">{title}</h1>

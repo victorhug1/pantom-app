@@ -2,6 +2,9 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import Layout from "@/components/Layout";
+import SEO from "@/components/SEO";
+import BreadcrumbsJsonLd from "@/components/SEO/BreadcrumbsJsonLd";
+import ServiceJsonLd from "@/components/SEO/ServiceJsonLd";
 import {
   Search,
   ListChecks,
@@ -19,13 +22,26 @@ import {
 export default function Seo() {
   return (
     <Layout>
-      <Head>
-        <title>Servicios SEO estratégico Colombia | Auditoría, posicionamiento web | Pantom</title>
-        <meta
-          name="description"
-          content="Servicios SEO en Colombia: auditoría, optimización, contenidos, SEO local y más. Mejora tu visibilidad y atrae tráfico cualificado con Pantom."
-        />
-      </Head>
+      <BreadcrumbsJsonLd items={[
+        { name: 'Inicio', url: '/' },
+        { name: 'Servicios', url: '/servicios' },
+        { name: 'SEO Estratégico', url: '/servicios/seo' },
+      ]} />
+      <ServiceJsonLd 
+        name="Estrategia y Visibilidad SEO"
+        description="Diseñamos estrategias SEO para aumentar visibilidad y captar leads."
+        serviceType="SEO"
+        offers={[
+          { name: "SEO Inicial", currency: "USD" },
+          { name: "SEO Avanzado", currency: "USD" },
+          { name: "SEO Local", currency: "USD" }
+        ]}
+      />
+      <SEO
+        title="SEO Estratégico en Colombia | Aumenta Tu Visibilidad | Pantom"
+        description="Investigación de palabras clave, técnica on-page/off-page y contenido para captar demanda real."
+        canonicalUrl="https://pantom.net/servicios/seo"
+      />
       <div className="relative min-h-screen pb-16 bg-[#0a0a0a] overflow-hidden">
         {/* Fondo con destellos/acento naranja */}
         <div aria-hidden="true" className="pointer-events-none select-none">
@@ -44,7 +60,7 @@ export default function Seo() {
             </p>
             <div className="flex justify-center mb-8">
               <Image
-                src="/images/services/Visibilidad y SEO estratégico conecta con tu audiencia online.png"
+                src="/images/services/visibilidad-y-seo-estrategico-conecta-con-tu-audiencia-online.png"
                 alt="Gráfico ilustrando el aumento de visibilidad online mediante servicios SEO de Pantom"
                 className="w-full max-w-2xl rounded-xl shadow-lg"
                 width={1200}

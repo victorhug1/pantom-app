@@ -4,17 +4,21 @@ import { Code, Database, TrendingUp, Compass } from "lucide-react";
 import Image from "next/image";
 import Layout from "@/components/Layout";
 import ParticlesBackgroundServicios from "@/components/ParticlesBackgroundServicios";
+import SEO from "@/components/SEO";
+import BreadcrumbsJsonLd from "@/components/SEO/BreadcrumbsJsonLd";
 
 export default function Servicios() {
   return (
     <Layout>
-      <Head>
-        <title>Servicios Digitales: Desarrollo Web, Datos, SEO y Estrategia | Pantom</title>
-        <meta
-          name="description"
-          content="Soluciones digitales en desarrollo web, bases de datos, SEO y estrategia digital. Agencia de marketing y tecnología en Colombia. ¡Impulsa tu éxito con Pantom!"
-        />
-      </Head>
+      <BreadcrumbsJsonLd items={[
+        { name: 'Inicio', url: '/' },
+        { name: 'Servicios', url: '/servicios' },
+      ]} />
+      <SEO
+        title="Servicios | Desarrollo Web, Bases de Datos y SEO | Pantom"
+        description="Construimos tecnología precisa: web a medida, datos y SEO. Enfocados en rendimiento y resultados."
+        canonicalUrl="https://pantom.net/servicios"
+      />
       <div className="relative min-h-screen pb-16 bg-[#0a0a0a] overflow-hidden">
         {/* Fondo con destellos/acento naranja */}
         <div aria-hidden="true" className="pointer-events-none select-none">
