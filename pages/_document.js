@@ -13,7 +13,7 @@ export default function Document() {
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-          })(window,document,'script','dataLayer','GTM-MN7GS3TZ');
+          })(window,document,'script','dataLayer','GTM-N6BQJQFH');
         `}} />
         {/* Hotjar Tracking Code */}
         <script dangerouslySetInnerHTML={{ __html: `
@@ -31,7 +31,7 @@ export default function Document() {
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
-            src="https://www.googletagmanager.com/ns.html?id=GTM-MN7GS3TZ"
+            src="https://www.googletagmanager.com/ns.html?id=GTM-N6BQJQFH"
             height="0"
             width="0"
             style={{ display: "none", visibility: "hidden" }}
